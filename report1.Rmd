@@ -86,12 +86,12 @@ V_{n} = dim1_{n} \times dim2_{n} \times dim3_{n}
 \end{align}
 Onde *V* é o volume sendo calculado pelo n-ésimo aluno e dim1, dim2 e dim3 são as dimensões coletadas do n-ésimo aluno.
 
-A próximo table apresenta o resultado dos cálculos dos volumes para cada aluno tanto para a régua quanto para o paquímetro:
+A próxima tabela apresenta o resultado dos cálculos dos volumes para cada aluno tanto para a régua quanto para o paquímetro:
 
 ```{r echo=F}
 dfVolume <- data.frame( regua = dfRegua$dim1 * dfRegua$dim2 * dfRegua$dim3,
                         paquimetro = dfPaquimetro$dim1 * dfPaquimetro$dim2 * dfPaquimetro$dim3)
-rownames(dfVolume) <- c("Aluno1", "Aluno2", "Aluno3", "Aluno4")
+rownames(dfVolume) <- c("$$V_1$$", "$$V_2$$", "$$V_3$$", "$$V_4$$")
 knitr::kable(dfVolume, digits = 5, col.names=c("Vol. - Régua (mm^3)", "Vol. - Paquímetro (mm^3)"), caption = 'Volume do objeto.')
 ```
 
@@ -114,7 +114,7 @@ O resultado das densidades está apresentado na tabela seguinte:
 ```{r echo=F}
 dfDensity <- data.frame( regua = weight / dfVolume$regua,
                         paquimetro = weight / dfVolume$paquimetro)
-rownames(dfDensity) <- c("Aluno1", "Aluno2", "Aluno3", "Aluno4")
+rownames(dfDensity) <- c("$$d_1$$", "$$d_2$$", "$$d_3$$", "$$d_4$$")
 knitr::kable(dfDensity, digits = 5, col.names=c("Densidade - Régua (mm^3/g)", "Densidade - Paquímetro (mm^3/g)"), caption = 'Densidade do objeto.')
 ```
 
@@ -148,7 +148,7 @@ O que resultou nos dados da tabela seguinte:
 ```{r echo=F}
 dfErro <- data.frame( regua = abs(Vp$regua - dfDensity$regua),
                       paquimetro = abs(Vp$paquimetro - dfDensity$paquimetro))
-rownames(dfErro) <- c("e1", "e2", "e3", "e4")
+rownames(dfErro) <- c("$$e_1$$", "$$e_2$$", "$$e_3$$", "$$e_4$$")
 knitr::kable(dfErro, digits = 10, col.names=c("Erro - Régua (mm^3/g)", "Erro - Paquímetro (mm^3/g)"), caption = 'Erro em relação à média.')
 ```
 
