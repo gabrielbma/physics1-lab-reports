@@ -176,7 +176,7 @@ intervalo <- data.frame(vpReguaMin=Vp$regua-erroMedio$regua, vpReguaMax=Vp$regua
 knitr::kable(intervalo, digits = 10, col.names=c("Regua-inf", "Regua-sup", "Paquimetro-inf", "Paquimetro-sup"), caption = 'Intervalo inferior e superior de variação para a régua e paquímetro.')
 ```
 
-A diferença entre o intervalor inferior e superior tanto para a régua quanto para o paquímetro está apresentada na próxima tabela:
+A diferença entre o intervalo inferior e superior tanto para a régua quanto para o paquímetro está apresentada na próxima tabela:
 
 ```{r echo=F}
 diffIntervalo <- data.frame(regua=intervalo$vpReguaMax-intervalo$vpReguaMin, paquimetro=intervalo$vpPaquimetroMax-intervalo$vpPaquimetroMin)
