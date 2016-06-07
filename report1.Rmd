@@ -6,7 +6,7 @@ subtitle: |
     | Laboratório de Física I
     | Relatório I
 author: | 
-    | Gabriel B. M. Armelin - 21550325
+    | Gabriel Bezerra de M. Armelin - 21550325
     | Mario Alves Pardo Junior - 21553964
     | Jonas Miranda Cascais Júnior - 21553844
     | Fabrício Yuri Costa da Silva - 21454545
@@ -169,15 +169,23 @@ knitr::kable(erroMedio, digits = 10, col.names=c("Régua (mm^3/g)", "Paquímetro
 
 ## 6) Cálculo estimado da densidade do objeto
 
-Com o valor provável ($$V_p$$) e o erro médio ($$e_m$$) podemos estimar o intervalo provável do valor da densidade do objeto. A tabela seguinte apresenta estes valores:
+Com o valor provável e o erro médio podemos estimar o intervalo provável do valor da densidade do objeto. A tabela seguinte apresenta estes valores:
 
-
-
-
-```{e echo=F}
-
+```{r echo=F}
+intervalo <- data.frame(vpReguaMin=Vp$regua-erroMedio$regua, vpReguaMax=Vp$regua+erroMedio$regua, vpPaquimetroMin=Vp$paquimetro-erroMedio$paquimetro, vpPaquimetroMax=Vp$paquimetro+erroMedio$paquimetro)
+knitr::kable(intervalo, digits = 10, col.names=c("Regua-inf", "Regua-sup", "Paquimetro-inf", "Paquimetro-sup"), caption = 'Intervalo inferior e superior de variação para a régua e paquímetro.')
 ```
 
+A diferença entre o intervalor inferior e superior tanto para a régua quanto para o paquímetro está apresentada na próxima tabela:
+
+```{r echo=F}
+diffIntervalo <- data.frame(regua=intervalo$vpReguaMax-intervalo$vpReguaMin, paquimetro=intervalo$vpPaquimetroMax-intervalo$vpPaquimetroMin)
+knitr::kable(diffIntervalo, digits = 10, col.names=c("Regua", "Paquimetro"), caption = 'Diferença entre o intervalo superior e inferior.')
+```
 
 Conclusão
 ====================
+
+De acordo com os dados apresentados, pudemos concluir que a densidade calculada a partir das medições com o paquímetro apresentou menor variação em relação à régua. Isto sugere que a densidade calculada com o paquímetro resultou uma maior precisão já que ela diminuiu o erro em relação a média.
+
+
