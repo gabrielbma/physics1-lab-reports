@@ -1,0 +1,99 @@
+---
+title: |
+ | Universidade Federal do Amazonas 
+ | Bacharelado em Matemática
+subtitle: | 
+    | Laboratório de Física I
+    | Relatório I
+author: | 
+    | Gabriel B. M. Armelin - 21550325
+    | Mario Alves Pardo Junior - 21553964
+    | Jonas Miranda Cascais Júnior - 21553844
+    | Fabrício Yuri Costa da Silva - 21454545
+framework: io2012
+output: pdf_document
+highlighter: highlight.js
+hitheme: tomorrow
+job: INDT
+lib: ../../librariesNew
+logo: bloomberg_shield.png
+mode: selfcontained
+header-includes: 
+    - \usepackage{amsmath}
+    - \usepackage{bbm}
+assets: ../../assets
+url: null
+widgets: mathjax
+---
+
+
+```{r setup, include=FALSE}
+suppressWarnings(library("knitr"))
+suppressWarnings(library("ggplot2"))
+opts_chunk$set(dev = 'pdf')
+set.seed(12432) 
+library(printr)
+```
+
+Introdução
+===================
+
+Este relatório descreve e analisa o experimento realizado em sala de aula na disciplina *Laboratório de Física I* do curso de Bacharelado em Matemática.
+
+Parte Experimental
+====================
+
+O experimento consiste em estimar a densidade de um objeto em forma de um paralelepípedo fornecido em sala de aula utilizando dois instrumentos de medição diferentes e analisar os resultados. Para isto, as atividades abaixo foram realizas pela equipe tanto para o instrumento paquímetro quanto para a régua:
+
+ 1) Coleta de 4 amostras das 3 dimensões do objeto;
+ 2) Cálculo do volume para as 4 amostras coletadas;
+ 3) Cálculo da densidade para as 4 amostras coletas;
+ 4) Cálculo da média das amostras;
+ 5) Cálculo do erro médio;
+ 6) 
+
+
+ 1) Um aluno realizou a pesagem do objeto;
+
+Com a medida das dimensões e massa do objeto, 
+
+Tratamento de Dados
+====================
+
+Esta seção apresenta os dados e cálculos em cada atividade descrita na seção *Parte Experimental*.
+
+## 1) Coleta das amostras
+
+A primeira atividade diz respeito a coleta das amostras das dimensões do objeto em estudo tanto com a régua quanto com o paquímetro. A tabela seguinte apresenta os valores lidos com a régua por cada aluno para as 3 dimensões do objeto.
+
+```{r echo=F}
+dfRegua <- data.frame(dim1=c(24,24,24,24), dim2=c(39,38,38,40), dim3=c(100, 100, 100, 100))
+rownames(dfRegua) <- c("Aluno1", "Aluno2", "Aluno3", "Aluno4")
+knitr::kable(dfRegua, digits = 5, col.names=c("dim1 (mm)", "dim2 (mm)", "dim3 (mm)"),caption = 'Amostras das dimensões do objeto coletadas com a régua.')
+```
+
+A próxima tabela apresenta os valores lidos com o paquímetro por cada aluno para as 3 dimensões do objeto:
+
+```{r echo=F}
+dfPaquimetro <- data.frame(dim1=c(24.35, 24.25, 24.40, 24.25), dim2=c(38.80, 39.10, 38.85,38.70), dim3=c(100.85,99.60,99.55,99.90))
+rownames(dfPaquimetro) <- c("Aluno1", "Aluno2", "Aluno3", "Aluno4")
+knitr::kable(dfPaquimetro, digits = 5, col.names=c("dim1 (mm)", "dim2 (mm)", "dim3 (mm)"), caption = 'Amostras das dimensões do objeto coletadas com o paquímetro.')
+```
+
+## Cálculo do volume 
+
+Esta seção apresenta o cálculo do volume do objeto a partir das amostras das dimensões coletadas no item anterior. A seguinte fórmula foi utilizada para o cálculo do volume:
+
+$$d_{n} = \frac{m_{n}}{V_{n}}$$
+
+
+
+## Cálculo da densidade para as 4 amostras coletas;
+## Cálculo da média das amostras;
+## Cálculo do erro médio;
+## 
+
+
+
+Conclusão
+====================
