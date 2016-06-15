@@ -1,0 +1,163 @@
+---
+title: |
+ | Universidade Federal do Amazonas 
+ | Bacharelado em Matemática
+subtitle: | 
+    | Laboratório de Física I
+    | Relatório II
+author: | 
+    | Gabriel Bezerra de M. Armelin - 21550325
+    | Jonas Miranda Cascais Júnior - 21553844
+    | Fabrício Yuri Costa da Silva - 21454545
+framework: io2012
+output: pdf_document
+highlighter: highlight.js
+hitheme: tomorrow
+job: INDT
+lib: ../../librariesNew
+logo: bloomberg_shield.png
+mode: selfcontained
+header-includes: 
+    - \usepackage{amsmath}
+    - \usepackage{bbm}
+    - \usepackage{commath}
+assets: ../../assets
+url: null
+widgets: mathjax
+---
+
+
+```{r setup, include=FALSE}
+suppressWarnings(library("knitr"))
+suppressWarnings(library("ggplot2"))
+suppressWarnings(library("grid"))
+suppressWarnings(library("gridExtra"))
+opts_chunk$set(dev = 'pdf')
+set.seed(12432) 
+options(digits = 10) 
+library(printr)
+```
+
+Introdução
+===================
+
+Este relatório descreve e analisa o experimento realizado em sala de aula na disciplina *Laboratório de Física I* do curso de Bacharelado em Matemática.
+
+Parte Experimental
+====================
+
+O experimento consiste em estimar a constante de elasticidade de uma mola. Para isto, uma mola foi prendida a um suporte que a manteve na posição vertical sendo suspensa pela sua extremidade superior. Com a mola nesta posição, as seguintes etapas foram realizadas:
+
+1) Medir o estado inicial da mola e suas expansões ao se adicionar, em sua extremidade inferior, objetos de masa 50g, 100g, 150g, 200g e 250g;
+2) Estimar *k* (constante de elasticidade da mola) para todas as medidas de pesos de cada aluno e calcular a *k* médio dos *k* dos alunos;
+3) Calcular o erro estimado.
+
+Tratamento de Dados
+====================
+
+Esta seção apresenta os dados e cálculos em cada atividade descrita na seção *Parte Experimental*.
+
+## 1) Coleta das amostras
+
+A primeira atividade diz respeito à coleta das amostras de expansões da mola após submetida a alguns objetos em sua parte inferior conforme a tabela abaixo:
+
+```{r echo=F}
+dfExpansao <- data.frame(inicial=c(97, 97, 98), "50"=c(132, 131, 131), "100"=c(161,159,161), "150"=c(189, 184, 189), "200"=c(218, 216, 216), "250"=c(246, 248, 246))
+rownames(dfExpansao) <- c("Aluno1", "Aluno2", "Aluno3")
+knitr::kable(dfExpansao, digits = 5, col.names=c("Inicial (mm)", "50g (mm)", "100g (mm)", "150g (mm)", "200g (mm)", "250g (mm)"),caption = 'Amostras das expansões da mola.')
+```
+
+A próxima tabela apresenta a expansão relativa ao estado inicial da mola:
+
+```{r echo=F}
+dfExpansaoRelativa <- dfExpansao - dfExpansao$inicial
+rownames(dfExpansaoRelativa) <- c("Aluno1", "Aluno2", "Aluno3")
+knitr::kable(dfExpansaoRelativa, digits = 5, col.names=c("Inicial (mm)", "50g (mm)", "100g (mm)", "150g (mm)", "200g (mm)", "250g (mm)"),caption = 'Expansões da mola em relação a seu estado inicial.')
+```
+
+Os valores relativos serão utilizados nos próximos calculos deste relatório.
+
+## 2) Estimativa da constante de elasticidade
+
+A força aplicada na mola foi calculada a partir da seguinte fórmula:
+
+\begin{align}\label{eq:forca}
+F = m \times g
+\end{align}
+
+Onde:
+
+ F: intensidade da força aplicada (N);
+ 
+ m: massa do objeto pendurado na mola; 
+ 
+ g: aceleração da gravidade. Para efeito de cálculo foi utilizado o valor 9,8 $m/s^2$.
+
+A tabela seguinte apresenta o resultado destes cálculos:
+
+```{r echo=F}
+dfExpansaoForca <- (as.data.frame(t(dfExpansaoRelativa)))
+dfExpansaoForca$forca <- c(0, 50*9.8/1000, 100*9.8/1000, 150*9.8/1000, 200*9.8/1000, 250*9.8/1000)
+knitr::kable(t(dfExpansaoForca$forca), digits = 5, col.names=c("Inicial (N)", "50g (N)", "100g (N)", "150g (N)", "200g (N)", "250g (N)"), caption = 'Forças aplicadas na mola.')
+```
+
+A relação entre expansão da mola e sua respectiva força aplicada é apresentada no gráfico seguinte:
+
+```{r echo=F,  fig.height=4, fig.width=11}
+plotAluno1 <- ggplot(data=dfExpansaoForca, aes(x=Aluno1, y=forca)) +
+               geom_line() +
+                geom_point() +
+                expand_limits(y=0) +
+                xlab("Expansões da mola (mm)") + ylab("Força (N)") +
+                ggtitle("Aluno 1 - Expansão x Força")
+
+plotAluno2 <- ggplot(data=dfExpansaoForca, aes(x=Aluno2, y=forca)) +
+               geom_line() +
+                geom_point() +
+                expand_limits(y=0) +
+                xlab("Expansões da mola (mm)") + ylab("Força (N)") +
+                ggtitle("Aluno 2 - Expansão x Força")
+
+plotAluno3 <- ggplot(data=dfExpansaoForca, aes(x=Aluno3, y=forca)) +
+               geom_line() +
+                geom_point() +
+                expand_limits(y=0) +
+                xlab("Expansões da mola (mm)") + ylab("Força (N)") +
+                ggtitle("Aluno 3 - Expansão x Força")
+
+grid.arrange(plotAluno1, plotAluno2, plotAluno3,ncol = 3)
+```
+
+Conforme observado, os três gráficos mostram que a relação entre as variáveis é praticamente linear crescente. Robert Hooke mostrou que a relação é realmente linear e a seguinte lei foi estabelecida, conhecida como Lei de Hooke:
+
+\begin{align}\label{eq:leiHooke}
+F = k \times x
+\end{align}
+
+Onde: 
+
+F: intensidade da força aplicada (N);
+
+k: constante de elasticidade da mola (N/mm);
+
+x: expansão da mola (mm).
+
+A próxima tabela apresenta os dados de *k* para a expansão obtida com o objeto de massa 250g em relação a mola sem objeto, valores aproximados também seriam obtidos se fizer calcular *k* para os demais objetos.
+
+```{r echo=F}
+dfK250 <- (dfExpansaoForca[,c(1,2,3)] / 1000)[6,]
+dfK250$Media <- mean(dfK250$Aluno1, dfK250$Aluno2, dfK250$Aluno3)
+rownames(dfK250) <- c("$k_{250g}$")
+knitr::kable(dfK250, digits = 5, col.names=c("Aluno1", "Aluno2", "Aluno3", "Média"), caption = 'Constante elástica para o objeto de 250g')
+```
+
+## 3) Erro estimado
+
+FALTANDO
+
+
+Conclusão
+====================
+
+FALTANDO
+
