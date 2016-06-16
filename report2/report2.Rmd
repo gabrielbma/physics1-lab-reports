@@ -46,7 +46,7 @@ Este relatório descreve e analisa o experimento realizado em sala de aula na di
 Parte Experimental
 ====================
 
-O experimento consiste em estimar a constante de elasticidade de uma mola. Para isto, uma mola foi prendida a um suporte que a manteve na posição vertical sendo suspensa pela sua extremidade superior. Com a mola nesta posição, as seguintes etapas foram realizadas:
+O experimento consiste em estimar a constante de elasticidade de uma mola. Para isto, uma mola foi presa a um suporte que a manteve na posição vertical sendo suspensa pela sua extremidade superior. Com a mola nesta posição, as seguintes etapas foram realizadas:
 
 1) Medir o estado inicial da mola e suas expansões ao se adicionar, em sua extremidade inferior, objetos de masa 50g, 100g, 150g, 200g e 250g;
 2) Estimar *k* (constante de elasticidade da mola) para todas as medidas de pesos de cada aluno e calcular a *k* médio dos *k* dos alunos;
@@ -142,7 +142,7 @@ k: constante de elasticidade da mola (N/mm);
 
 x: expansão da mola (mm).
 
-A próxima tabela apresenta os dados de *k* para a expansão obtida com o objeto de massa 250g em relação a mola sem objeto, valores aproximados também seriam obtidos se fizer calcular *k* para os demais objetos.
+A próxima tabela apresenta os dados de *k* para a expansão obtida com o objeto de massa 250g em relação a mola sem objeto, valores aproximados também seriam obtidos se calcular *k* para os demais objetos.
 
 ```{r echo=F}
 dfK250 <- (dfExpansaoForca[,c(1,2,3)] / 1000)[6,]
@@ -153,11 +153,39 @@ knitr::kable(dfK250, digits = 5, col.names=c("Aluno1", "Aluno2", "Aluno3", "Méd
 
 ## 3) Erro estimado
 
-FALTANDO
+Esta seção apresentará o cálculo do erro dos *k* de cada aluno em relação ao *k* médio. A fórmula utilizada para o cálculo do erro é:
 
+\begin{align}\label{eq:erromedio}
+e_n = \abs{k_{md} - k_n}
+\end{align}
+
+Onde:
+
+$e_n$: corresponde ao erro do *n*-éssimo aluno;
+
+$k_{md}$: corresponde *k* médio obtido na seção anterior;
+
+$k_n$: corresponde ao *k* do *n*-éssimo aluno calculado na seção anterior;
+
+A próxima tabela apresenta o resultado obtido.
+
+```{r echo=F}
+erro1 <- abs(dfK250$Media-dfK250$Aluno1)
+erro2 <- abs(dfK250$Media-dfK250$Aluno2)
+erro3 <- abs(dfK250$Media-dfK250$Aluno3)
+dfErro <- data.frame(erro1=erro1, erro2=erro2, erro3=erro3, erroMedia=mean(c(erro1,erro2,erro3)))
+rownames(dfErro) <- c("Erro")
+knitr::kable(dfErro, digits = 5, col.names=c("$e_1$","$e_2$", "$e_3$", "Média"), caption = 'Erro de cada constante de elasticidade em relação a média.')
+```
 
 Conclusão
 ====================
 
-FALTANDO
+De acordo com os dados apresentados, pode-se concluir que a estimativa da constante de elasticidade está entre o seguinte intervalo:
+
+```{r echo=F}
+dfIntervalo <- data.frame(inf=(dfK250$Media - dfErro$erroMedia), sup=dfK250$Media+dfErro$erroMedia)
+rownames(dfIntervalo) <- c("Intervalo")
+knitr::kable(dfIntervalo, digits = 5, col.names=c("Inferior","Superior"), caption = 'Intervalo da estimativa da constante de elasticidade')
+```
 
