@@ -145,7 +145,7 @@ x: expansão da mola (mm).
 A próxima tabela apresenta os dados de *k* para a expansão obtida com o objeto de massa 250g em relação a mola sem objeto, valores aproximados também seriam obtidos se calcular *k* para os demais objetos.
 
 ```{r echo=F}
-dfK250 <- (dfExpansaoForca[,c(1,2,3)] / 1000)[6,]
+dfK250 <- (dfExpansaoForca$forca / (dfExpansaoForca[,c(1,2,3)] / 1000))[6,]
 dfK250$Media <- mean(dfK250$Aluno1, dfK250$Aluno2, dfK250$Aluno3)
 rownames(dfK250) <- c("$k_{250g}$")
 knitr::kable(dfK250, digits = 5, col.names=c("Aluno1", "Aluno2", "Aluno3", "Média"), caption = 'Constante elástica para o objeto de 250g')
