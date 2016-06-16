@@ -26,7 +26,6 @@ url: null
 widgets: mathjax
 ---
 
-
 ```{r setup, include=FALSE}
 suppressWarnings(library("knitr"))
 suppressWarnings(library("ggplot2"))
@@ -101,7 +100,7 @@ dfExpansaoForca$forca <- c(0, 50*9.8/1000, 100*9.8/1000, 150*9.8/1000, 200*9.8/1
 knitr::kable(t(dfExpansaoForca$forca), digits = 5, col.names=c("Inicial (N)", "50g (N)", "100g (N)", "150g (N)", "200g (N)", "250g (N)"), caption = 'Forças aplicadas na mola.')
 ```
 
-A relação entre expansão da mola e sua respectiva força aplicada é apresentada no gráfico seguinte:
+A relação entre expansão da mola (tabela 2) e sua respectiva força (tabela 3) aplicada é apresentada no gráfico seguinte:
 
 ```{r echo=F,  fig.height=4, fig.width=11}
 plotAluno1 <- ggplot(data=dfExpansaoForca, aes(x=Aluno1, y=forca)) +
@@ -185,7 +184,7 @@ De acordo com os dados apresentados, pode-se concluir que a estimativa da consta
 
 ```{r echo=F}
 dfIntervalo <- data.frame(inf=(dfK250$Media - dfErro$erroMedia), sup=dfK250$Media+dfErro$erroMedia)
+dfIntervalo$diff <- dfIntervalo$sup-dfIntervalo$inf
 rownames(dfIntervalo) <- c("Intervalo")
-knitr::kable(dfIntervalo, digits = 5, col.names=c("k Inferior (N/m)","k Superior (N/m)"), caption = 'Intervalo da estimativa da constante de elasticidade')
+knitr::kable(dfIntervalo, digits = 5, col.names=c("k Inferior (N/m)","k Superior (N/m)", "Diferença (N/m)"), caption = 'Intervalo da estimativa da constante de elasticidade')
 ```
-
