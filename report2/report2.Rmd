@@ -148,7 +148,7 @@ A próxima tabela apresenta os dados de *k* para a expansão obtida com o objeto
 dfK250 <- (dfExpansaoForca$forca / (dfExpansaoForca[,c(1,2,3)] / 1000))[6,]
 dfK250$Media <- mean(dfK250$Aluno1, dfK250$Aluno2, dfK250$Aluno3)
 rownames(dfK250) <- c("$k_{250g}$")
-knitr::kable(dfK250, digits = 5, col.names=c("Aluno1", "Aluno2", "Aluno3", "Média"), caption = 'Constante elástica para o objeto de 250g')
+knitr::kable(dfK250, digits = 5, col.names=c("$k_1$ (N/m)", "$k_2$ (N/m)", "$k_3$ (N/m)", "$k_{md}$ (N/m)"), caption = 'Constante elástica para o objeto de 250g')
 ```
 
 ## 3) Erro estimado
@@ -186,6 +186,6 @@ De acordo com os dados apresentados, pode-se concluir que a estimativa da consta
 ```{r echo=F}
 dfIntervalo <- data.frame(inf=(dfK250$Media - dfErro$erroMedia), sup=dfK250$Media+dfErro$erroMedia)
 rownames(dfIntervalo) <- c("Intervalo")
-knitr::kable(dfIntervalo, digits = 5, col.names=c("Inferior","Superior"), caption = 'Intervalo da estimativa da constante de elasticidade')
+knitr::kable(dfIntervalo, digits = 5, col.names=c("k Inferior (N/m)","k Superior (N/m)"), caption = 'Intervalo da estimativa da constante de elasticidade')
 ```
 
