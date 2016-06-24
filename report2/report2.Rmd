@@ -104,21 +104,21 @@ A relação entre expansão da mola (tabela 2) e sua respectiva força (tabela 3
 
 ```{r echo=F,  fig.height=4, fig.width=11}
 plotAluno1 <- ggplot(data=dfExpansaoForca, aes(x=Aluno1, y=forca)) +
-               geom_line() +
+               geom_smooth(method="lm", se = FALSE) +
                 geom_point() +
                 expand_limits(y=0) +
                 xlab("Expansões da mola (mm)") + ylab("Força (N)") +
                 ggtitle("Aluno 1 - Expansão x Força")
 
 plotAluno2 <- ggplot(data=dfExpansaoForca, aes(x=Aluno2, y=forca)) +
-               geom_line() +
+                geom_smooth(method="lm", se = FALSE) +
                 geom_point() +
                 expand_limits(y=0) +
                 xlab("Expansões da mola (mm)") + ylab("Força (N)") +
                 ggtitle("Aluno 2 - Expansão x Força")
 
 plotAluno3 <- ggplot(data=dfExpansaoForca, aes(x=Aluno3, y=forca)) +
-               geom_line() +
+                geom_smooth(method="lm", se = FALSE) +
                 geom_point() +
                 expand_limits(y=0) +
                 xlab("Expansões da mola (mm)") + ylab("Força (N)") +
