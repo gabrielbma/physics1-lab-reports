@@ -43,6 +43,7 @@ Introdução
 
 Este relatório descreve e analisa o experimento realizado em sala de aula na disciplina *Laboratório de Física I* do curso de Bacharelado em Matemática.
 
+
 Parte Experimental
 ====================
 
@@ -61,147 +62,104 @@ Esta seção apresenta os dados e cálculos em cada atividade descrita na seçã
 A primeira atividade diz respeito à coleta das amostras de tempo de queda da espera em diversas distâncias e por 4 alunos diferentes. A próxima tabela apresenta os valores coletados:
 
 ```{r echo=F}
-dfTempoQueda <- data.frame("10cm"=c(0.1371, 0.1381, 0.1362, 0.1357), "15cm"=c(0.1701, 0.1718, 0.1703, 0.1716), "20cm"=c(0.1963, 0.1997, 0.1980, 0.1972), "25cm"=c(0.2213, 0.2241, 0.2222, 0.2223), "30cm"=c(0.2443, 0.2460, 0.2448, 0.2434), "35cm"=c(0.2653, 0.2656, 0.2650, 0.2657))
+dfTempoQueda <- data.frame("0.10m"=c(0.1371, 0.1381, 0.1362, 0.1357), "0.15m"=c(0.1701, 0.1718, 0.1703, 0.1716), "0.20m"=c(0.1963, 0.1997, 0.1980, 0.1972), "0.25m"=c(0.2213, 0.2241, 0.2222, 0.2223), "0.30m"=c(0.2443, 0.2460, 0.2448, 0.2434), "0.35m"=c(0.2653, 0.2656, 0.2650, 0.2657))
 dfTempoQueda <- rbind(dfTempoQueda, colMeans(dfTempoQueda))
 rownames(dfTempoQueda) <- c("Aluno1", "Aluno2", "Aluno3", "Aluno4", "Média")
-knitr::kable(dfTempoQueda, digits = 5, col.names=c("10 cm (s)", "15 cm (s)", "20 cm (s)", "25 cm (s)", "30 cm (s)", "35 cm (s)"), caption = 'Amostras dos tempos de queda da esfera em segundos.')
+knitr::kable(dfTempoQueda, digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Amostras dos tempos de queda da esfera em segundos.')
 ```
 
 ## 2) Estimativa da aceleração da gravidade
 
 Esta seção descreve o processo utilizado para estimar a aceleração da gravidade. O primeiro será apresentar graficamente a relação de tempo de queda médio da esfera (calculado na seção anterior) com a distância percorrida. O próxmo gráfico apresenta o resultado obtido:
 
-```{r echo=F,  fig.height=4, fig.width=11}
-dfRelTempoQuedaDist <- data.frame("tempoQueda" = t(dfTempoQueda[5,]), dist = c(10, 15, 20, 25, 30, 35))
+```{r echo=F,  fig.height=2, fig.width=4, fig.align="center"}
+dist <- c(0.10, 0.15, 0.20, 0.25, 0.30, 0.35)
+dfRelTempoQuedaDist <- data.frame("tempoQueda" = t(dfTempoQueda[5,]), dist = dist)
 colnames(dfRelTempoQuedaDist) <- c("TempoQueda", "Dist")
 ggplot(data=dfRelTempoQuedaDist, aes(x=TempoQueda, y=Dist)) +
        geom_point() +
        expand_limits(y=0) +
-       xlab("Tempo de Queda (s)") + ylab("Distância (cm)") +
+       xlab("Tempo de Queda (s)") + ylab("Distância (m)") +
        ggtitle("Relação tempo de queda x distância")
 ```
-Plotando os gráficos dos dados de média de cada Utilizando os os valores médios de cada distância apresentados na tabela anterior
+
+O gráfico se assemelha a uma reta ou uma leve curva. Esperava-se que a curva fosse mais acentuada já que o gráfico da relação distância-tempo em um movimento uniformemente variado é uma meia parábola. Entendemos que este gráfico se apresentou desta maneira devido ao número pequeno de amostras coletadas.
+
+Pode calcular a aceleração utilizando a seguinte fórmula:
+
+\begin{align}\label{eq:leiHooke}
+s = s_0 + v_0t + \frac{1}{2}at^2
+\end{align}
+
+Onde:
+
+s = corresponde a posição final. Os valores 5cm, 10cm, 15cm, 20cm, 25cm, 30cm e 35cm foram utilizados como posição final.
+
+$s_0$ = corresponde a posição inicial. Neste caso será considerado 0 a posição inicial.
+
+$v_0$ = corresponde a velocidade inicial. Como a esfera está em repouso em t=0, a velocidade inicial é 0.
+
+t = corresponde ao tempo final de queda, Neste caso serão utilizados os valores dos tempos médios para cada distância percorrida que foram apresentados na tabela 1.
+
+A seguinte tabela apresenta a aceleração da gravidade para cada distância percorrida:
+
+```{r echo=F}
+dfAceleracao <- (dist * 2) / dfTempoQueda[5,]^2
+rownames(dfAceleracao) <- c("Aceleração")
+knitr::kable(dfAceleracao, digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Acelerações da gravidade para cada altura da esfera.')
+```
+
+A média das acelerações é:
+
+   `r mean(as.numeric(dfAceleracao))` $m/s^2$.   
+
+## 3) Estimativa do erro
+
+Esta seção apresenta as estimativas dos erro de medição da seção anterior. Inicialmente, calculamos o erro de cada medição em relação a média dos tempos de queda, conforme a tabela abaixo.
 
 
-<!-- A próxima tabela apresenta a expansão relativa ao estado inicial da mola: -->
+```{r echo=F}
+dfTempoQuedaErro <- abs(t(t(dfTempoQueda) - as.numeric(dfTempoQueda[5,]))[1:4,])
+dfTempoQuedaErro <- rbind(dfTempoQuedaErro, colMeans(dfTempoQuedaErro))
+rownames(dfTempoQuedaErro) <- c("Aluno1", "Aluno2", "Aluno3", "Aluno4", "Média")
+knitr::kable(dfTempoQuedaErro, digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Erros de medição dos tempos de queda da esfera em segundos.')
+```
 
-<!-- ```{r echo=F} -->
-<!-- dfExpansaoRelativa <- dfExpansao - dfExpansao$inicial -->
-<!-- rownames(dfExpansaoRelativa) <- c("Aluno1", "Aluno2", "Aluno3") -->
-<!-- knitr::kable(dfExpansaoRelativa, digits = 5, col.names=c("Inicial (mm)", "50g (mm)", "100g (mm)", "150g (mm)", "200g (mm)", "250g (mm)"),caption = 'Expansões da mola em relação a seu estado inicial.') -->
-<!-- ``` -->
 
-<!-- Os valores relativos serão utilizados nos próximos calculos deste relatório. -->
+A partir dos erros médios dos tempos de queda, podemos estimar a variação de erro inferior da aceleração da gravidade. A tabela abaixo apresenta os resultados:
 
-<!-- ## 2) Estimativa da constante de elasticidade -->
 
-<!-- A força aplicada na mola foi calculada a partir da seguinte fórmula: -->
+```{r echo=F}
+dfAceleracaoInferior <- (dist * 2) / (dfTempoQueda[5,]+dfTempoQuedaErro[5,])^2
+rownames(dfAceleracaoInferior) <- c("Aceleração")
+aceleracaoInf <- mean(as.numeric(dfAceleracaoInferior))
+knitr::kable(dfAceleracaoInferior, digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Intervalo inferior da estimativa das acelerações da gravidade para cada altura da esfera.')
+```
 
-<!-- \begin{align}\label{eq:forca} -->
-<!-- F = m \times g -->
-<!-- \end{align} -->
+A média das acelerações é:
 
-<!-- Onde: -->
+   `r aceleracaoInf` $m/s^2$.  
 
-<!--  F: intensidade da força aplicada (N); -->
+Por fim, estimamos a variação de erro superior da aceleracao da gravidade. A próxima tabela apresenta os resultados obtidos.
 
-<!--  m: massa do objeto pendurado na mola;  -->
+```{r echo=F}
+dfAceleracaoSuperior <- (dist * 2) / (dfTempoQueda[5,]-dfTempoQuedaErro[5,])^2
+rownames(dfAceleracaoSuperior) <- c("Aceleração")
+aceleracaoSup <- mean(as.numeric(dfAceleracaoSuperior))
+knitr::kable(dfAceleracaoSuperior, digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Intervalo superior das estimativas das acelerações da gravidade para cada altura da esfera.')
+```
 
-<!--  g: aceleração da gravidade. Para efeito de cálculo foi utilizado o valor 9,8 $m/s^2$. -->
+A média das acelerações é:
 
-<!-- A tabela seguinte apresenta o resultado destes cálculos: -->
+   `r aceleracaoSup` $m/s^2$.  
 
-<!-- ```{r echo=F} -->
-<!-- dfExpansaoForca <- (as.data.frame(t(dfExpansaoRelativa))) -->
-<!-- dfExpansaoForca$forca <- c(0, 50*9.8/1000, 100*9.8/1000, 150*9.8/1000, 200*9.8/1000, 250*9.8/1000) -->
-<!-- knitr::kable(t(dfExpansaoForca$forca), digits = 5, col.names=c("Inicial (N)", "50g (N)", "100g (N)", "150g (N)", "200g (N)", "250g (N)"), caption = 'Forças aplicadas na mola.') -->
-<!-- ``` -->
 
-<!-- A relação entre expansão da mola (tabela 2) e sua respectiva força (tabela 3) aplicada é apresentada no gráfico seguinte: -->
+Conclusão
+====================
 
-<!-- ```{r echo=F,  fig.height=4, fig.width=11} -->
-<!-- plotAluno1 <- ggplot(data=dfExpansaoForca, aes(x=Aluno1, y=forca)) + -->
-<!--                geom_smooth(method="lm", se = FALSE) + -->
-<!--                 geom_point() + -->
-<!--                 expand_limits(y=0) + -->
-<!--                 xlab("Expansões da mola (mm)") + ylab("Força (N)") + -->
-<!--                 ggtitle("Aluno 1 - Expansão x Força") -->
+De acordo com os dados apresentados, pode-se concluir que a estimativa da aceleração da gravidade está no seguinte intervalo:
 
-<!-- plotAluno2 <- ggplot(data=dfExpansaoForca, aes(x=Aluno2, y=forca)) + -->
-<!--                 geom_smooth(method="lm", se = FALSE) + -->
-<!--                 geom_point() + -->
-<!--                 expand_limits(y=0) + -->
-<!--                 xlab("Expansões da mola (mm)") + ylab("Força (N)") + -->
-<!--                 ggtitle("Aluno 2 - Expansão x Força") -->
-
-<!-- plotAluno3 <- ggplot(data=dfExpansaoForca, aes(x=Aluno3, y=forca)) + -->
-<!--                 geom_smooth(method="lm", se = FALSE) + -->
-<!--                 geom_point() + -->
-<!--                 expand_limits(y=0) + -->
-<!--                 xlab("Expansões da mola (mm)") + ylab("Força (N)") + -->
-<!--                 ggtitle("Aluno 3 - Expansão x Força") -->
-
-<!-- grid.arrange(plotAluno1, plotAluno2, plotAluno3,ncol = 3) -->
-<!-- ``` -->
-
-<!-- Conforme observado, os três gráficos mostram que a relação entre as variáveis é praticamente linear crescente. Robert Hooke mostrou que a relação é realmente linear e a seguinte lei foi estabelecida, conhecida como Lei de Hooke: -->
-
-<!-- \begin{align}\label{eq:leiHooke} -->
-<!-- F = k \times x -->
-<!-- \end{align} -->
-
-<!-- Onde:  -->
-
-<!-- F: intensidade da força aplicada (N); -->
-
-<!-- k: constante de elasticidade da mola (N/mm); -->
-
-<!-- x: expansão da mola (mm). -->
-
-<!-- A próxima tabela apresenta os dados de *k* para a expansão obtida com o objeto de massa 250g em relação a mola sem objeto, valores aproximados também seriam obtidos se calcular *k* para os demais objetos. -->
-
-<!-- ```{r echo=F} -->
-<!-- dfK250 <- (dfExpansaoForca$forca / (dfExpansaoForca[,c(1,2,3)] / 1000))[6,] -->
-<!-- dfK250$Media <- mean(dfK250$Aluno1, dfK250$Aluno2, dfK250$Aluno3) -->
-<!-- rownames(dfK250) <- c("$k_{250g}$") -->
-<!-- knitr::kable(dfK250, digits = 5, col.names=c("$k_1$ (N/m)", "$k_2$ (N/m)", "$k_3$ (N/m)", "$k_{md}$ (N/m)"), caption = 'Constante elástica para o objeto de 250g') -->
-<!-- ``` -->
-
-<!-- ## 3) Erro estimado -->
-
-<!-- Esta seção apresentará o cálculo do erro dos *k* de cada aluno em relação ao *k* médio. A fórmula utilizada para o cálculo do erro é: -->
-
-<!-- \begin{align}\label{eq:erromedio} -->
-<!-- e_n = \abs{k_{md} - k_n} -->
-<!-- \end{align} -->
-
-<!-- Onde: -->
-
-<!-- $e_n$: corresponde ao erro do *n*-éssimo aluno; -->
-
-<!-- $k_{md}$: corresponde *k* médio obtido na seção anterior; -->
-
-<!-- $k_n$: corresponde ao *k* do *n*-éssimo aluno calculado na seção anterior; -->
-
-<!-- A próxima tabela apresenta o resultado obtido. -->
-
-<!-- ```{r echo=F} -->
-<!-- erro1 <- abs(dfK250$Media-dfK250$Aluno1) -->
-<!-- erro2 <- abs(dfK250$Media-dfK250$Aluno2) -->
-<!-- erro3 <- abs(dfK250$Media-dfK250$Aluno3) -->
-<!-- dfErro <- data.frame(erro1=erro1, erro2=erro2, erro3=erro3, erroMedia=mean(c(erro1,erro2,erro3))) -->
-<!-- rownames(dfErro) <- c("Erro") -->
-<!-- knitr::kable(dfErro, digits = 5, col.names=c("$e_1$","$e_2$", "$e_3$", "Média"), caption = 'Erro de cada constante de elasticidade em relação a média.') -->
-<!-- ``` -->
-
-<!-- Conclusão -->
-<!-- ==================== -->
-
-<!-- De acordo com os dados apresentados, pode-se concluir que a estimativa da constante de elasticidade está entre o seguinte intervalo: -->
-
-<!-- ```{r echo=F} -->
-<!-- dfIntervalo <- data.frame(inf=(dfK250$Media - dfErro$erroMedia), sup=dfK250$Media+dfErro$erroMedia) -->
-<!-- dfIntervalo$diff <- dfIntervalo$sup-dfIntervalo$inf -->
-<!-- rownames(dfIntervalo) <- c("Intervalo") -->
-<!-- knitr::kable(dfIntervalo, digits = 5, col.names=c("k Inferior (N/m)","k Superior (N/m)", "Diferença (N/m)"), caption = 'Intervalo da estimativa da constante de elasticidade') -->
-<!-- ``` -->
+```{r echo=F}
+dfIntervalo <- data.frame(inf=c(aceleracaoInf), sup=c(aceleracaoSup))
+knitr::kable(dfIntervalo, digits = 5, col.names=c("Intervalo inferior", "Intervalo superior"), caption = 'Intervalo de estimativa da aceleração da gravidade')
+```
