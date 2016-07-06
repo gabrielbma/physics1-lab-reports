@@ -77,6 +77,8 @@ O experimento consiste em estimar o valor da aceleração da gravidade no local 
 3. Cálculo do valor provável
 4. Estimativa do erro
 
+A próxima seção explicará em detalhes cada uma destas etapas.
+
 
 Análise de Dados
 ====================
