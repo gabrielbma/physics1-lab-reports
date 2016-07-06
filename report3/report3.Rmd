@@ -1,31 +1,53 @@
 ---
 title: |
- | Universidade Federal do Amazonas 
- | Bacharelado em Matemática
+ | UNIVERSIDADE FEDERAL DO AMAZONAS
+ | INSTITUTO DE CIÊNCIAS EXATAS
+ | BACHARELADO EM MATEMÁTICA
 subtitle: | 
-    | Laboratório de Física I
-    | Relatório III
+    | LABORATÓRIO DE FÍSICA I
+    | RELATÓRIO III
 author: | 
     | Gabriel Bezerra de M. Armelin - 21550325
     | Mario Alves Pardo Junior - 21553964
     | Jonas Miranda Cascais Júnior - 21553844
     | Fabrício Yuri Costa da Silva - 21454545
 framework: io2012
-output: pdf_document
-highlighter: highlight.js
-hitheme: tomorrow
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    # number_sections: false
+    template: template.latex
+documentclass: report
+fontsize: 11pt
+geometry: top=3cm, left=2.5cm, right=2.5cm, bottom=2.5cm
+papersize: a4paper
+professor: José Pedro Cordeiro
+city: Manaus
+year: 2016
+bibliography: bibliography.bib
 job: INDT
-lib: ../../librariesNew
-logo: bloomberg_shield.png
 mode: selfcontained
 header-includes: 
+    - \usepackage{verbatim}
+    - \usepackage[utf8]{inputenc}
+    - \usepackage[brazil]{babel}
+    - \usepackage{indentfirst}  
+    - \usepackage{amstext}      
+    - \usepackage{amssymb,latexsym}
+    - \usepackage{mathtools}       
+    - \usepackage[T1]{fontenc}     
+    - \usepackage{multicol}
+    - \usepackage[brazil]{babel}
     - \usepackage{amsmath}
     - \usepackage{bbm}
     - \usepackage{commath}
-assets: ../../assets
-url: null
-widgets: mathjax
+    - \usepackage{graphicx, color}
+    - \setlength{\parskip}{0.3cm}
+nocite: | 
+  @ref1, @ref2, @ref3
 ---
+
 
 ```{r setup, include=FALSE}
 suppressWarnings(library("knitr"))
@@ -38,6 +60,7 @@ options(digits = 10)
 library(printr)
 ```
 
+
 Introdução
 ===================
 
@@ -49,43 +72,48 @@ Parte Experimental
 
 O experimento consiste em estimar o valor da aceleração da gravidade no local de realizazação do experimento. Para isto, as seguintes etapas foram realizadas por 4 alunos: 
 
-1) Coleta do tempo de queda de uma esfera em diversas alturas diferentes. Para a medição deste tempo, foi utilizado um aparelho apropriado para a tarefa. Este aparelho é capaz de medir o tempo de queda com precisão de 0.001 segundos.
-2) Estimatica da aceleração da gravidade
-3) Estimativa do erro
+1. Coleta do tempo de queda de uma esfera em diversas alturas diferentes. Para a medição deste tempo, foi utilizado um aparelho apropriado para a tarefa. Este aparelho é capaz de medir o tempo de queda com precisão de 0.001 segundos.
+2. Cálculo da aceleração da gravidade
+3. Cálculo do valor provável
+4. Estimativa do erro
 
-Tratamento de Dados
+
+Análise de Dados
 ====================
 
 Esta seção apresenta os dados e cálculos em cada atividade descrita na seção *Parte Experimental*.
 
-## 1) Coleta das amostras
+## Coleta das amostras
 A primeira atividade diz respeito à coleta das amostras de tempo de queda da espera em diversas distâncias e por 4 alunos diferentes. A próxima tabela apresenta os valores coletados:
 
 ```{r echo=F}
 dfTempoQueda <- data.frame("0.10m"=c(0.1371, 0.1381, 0.1362, 0.1357), "0.15m"=c(0.1701, 0.1718, 0.1703, 0.1716), "0.20m"=c(0.1963, 0.1997, 0.1980, 0.1972), "0.25m"=c(0.2213, 0.2241, 0.2222, 0.2223), "0.30m"=c(0.2443, 0.2460, 0.2448, 0.2434), "0.35m"=c(0.2653, 0.2656, 0.2650, 0.2657))
 dfTempoQueda <- rbind(dfTempoQueda, colMeans(dfTempoQueda))
 rownames(dfTempoQueda) <- c("Aluno1", "Aluno2", "Aluno3", "Aluno4", "Média")
-knitr::kable(dfTempoQueda, digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Amostras dos tempos de queda da esfera em segundos.')
+knitr::kable(dfTempoQueda[1:4,], digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Amostras dos tempos de queda da esfera em segundos.')
 ```
 
-## 2) Estimativa da aceleração da gravidade
+## Cálculo da aceleração da gravidade
 
-Esta seção descreve o processo utilizado para estimar a aceleração da gravidade. O primeiro será apresentar graficamente a relação de tempo de queda médio da esfera (calculado na seção anterior) com a distância percorrida. O próxmo gráfico apresenta o resultado obtido:
+Esta seção descreve o processo utilizado para estimar a aceleração da gravidade. Primeiramente, vamos analisar graficamente a relação de tempo de queda médio da esfera (calculado na seção anterior) com o deslocamento. O próxmo gráfico apresenta o resultado obtido:
 
 ```{r echo=F,  fig.height=2, fig.width=4, fig.align="center"}
 dist <- c(0.10, 0.15, 0.20, 0.25, 0.30, 0.35)
 dfRelTempoQuedaDist <- data.frame("tempoQueda" = t(dfTempoQueda[5,]), dist = dist)
 colnames(dfRelTempoQuedaDist) <- c("TempoQueda", "Dist")
+dfRelTempoQuedaDistZero <- data.frame("TempoQueda" = c(0), Dist = c(0))
+dfRelTempoQuedaDist <- rbind(dfRelTempoQuedaDistZero, dfRelTempoQuedaDist)
+
 ggplot(data=dfRelTempoQuedaDist, aes(x=TempoQueda, y=Dist)) +
+       stat_smooth(method = "lm", formula = y ~ x + I(x^2), size = 1) +
        geom_point() +
-       expand_limits(y=0) +
        xlab("Tempo de Queda (s)") + ylab("Distância (m)") +
-       ggtitle("Relação tempo de queda x distância")
+       ggtitle("Relação tempo de queda x deslocamento")
 ```
 
 O gráfico se assemelha a uma reta ou uma leve curva. Esperava-se que a curva fosse mais acentuada já que o gráfico da relação distância-tempo em um movimento uniformemente variado é uma meia parábola. Entendemos que este gráfico se apresentou desta maneira devido ao número pequeno de amostras coletadas.
 
-Pode calcular a aceleração utilizando a seguinte fórmula:
+Pode-se calcular a aceleração utilizando a seguinte fórmula:
 
 \begin{align}\label{eq:leiHooke}
 s = s_0 + v_0t + \frac{1}{2}at^2
@@ -99,67 +127,83 @@ $s_0$ = corresponde a posição inicial. Neste caso será considerado 0 a posiç
 
 $v_0$ = corresponde a velocidade inicial. Como a esfera está em repouso em t=0, a velocidade inicial é 0.
 
-t = corresponde ao tempo final de queda, Neste caso serão utilizados os valores dos tempos médios para cada distância percorrida que foram apresentados na tabela 1.
+t = corresponde ao tempo final de queda, neste caso serão utilizados os valores dos tempos médios para cada distância percorrida que foram apresentados na tabela 1.
 
-A seguinte tabela apresenta a aceleração da gravidade para cada distância percorrida:
+A seguinte tabela apresenta a aceleração da gravidade para cada distância percorrida e para cada medição dos alunos:
 
-```{r echo=F}
-dfAceleracao <- (dist * 2) / dfTempoQueda[5,]^2
-rownames(dfAceleracao) <- c("Aceleração")
-knitr::kable(dfAceleracao, digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Acelerações da gravidade para cada altura da esfera.')
+```{r echo=F, }
+dfAceleracao <- t((dist * 2) / t(dfTempoQueda[1:4,]^2))
+rownames(dfAceleracao) <- c("a1", "a2", "a3", "a4")
+knitr::kable(dfAceleracao, digits = 5, col.names=c("0.10 m (m/$s^2$)", "0.15 m (m/$s^2$)", "0.20 m (m/$s^2$)", "0.25 m (m/$s^2$)", "0.30 m (m/$s^2$)", "0.35 m (m/$s^2$)"), caption = 'Acelerações da gravidade para cada deslocamento e medição de aluno.')
 ```
 
-A média das acelerações é:
+Onde $a_1$ corresponde a aceleração da gravidade para as medidas do *Aluno1* apresentadas na seção anterior, $a_2$ para o *Aluno2* e assim por diante.
 
-   `r mean(as.numeric(dfAceleracao))` $m/s^2$.   
-
-## 3) Estimativa do erro
-
-Esta seção apresenta as estimativas dos erro de medição da seção anterior. Inicialmente, calculamos o erro de cada medição em relação a média dos tempos de queda, conforme a tabela abaixo.
-
+Calculando a média das acelerações da gravidade de cada deslocamento por aluno obtém-se os seguintes valores:
 
 ```{r echo=F}
-dfTempoQuedaErro <- abs(t(t(dfTempoQueda) - as.numeric(dfTempoQueda[5,]))[1:4,])
-dfTempoQuedaErro <- rbind(dfTempoQuedaErro, colMeans(dfTempoQuedaErro))
-rownames(dfTempoQuedaErro) <- c("Aluno1", "Aluno2", "Aluno3", "Aluno4", "Média")
-knitr::kable(dfTempoQuedaErro, digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Erros de medição dos tempos de queda da esfera em segundos.')
+dfAceleracaoMean <- as.matrix(rowMeans(dfAceleracao))
+rownames(dfAceleracaoMean) <- c("$acel_1$", "$acel_2$", "$acel_3$", "$acel_4$")
+knitr::kable(t(dfAceleracaoMean),  caption = 'Aceleração da gravidade por aluno')
+```
+
+Onde $acel_1$ significa a média da aceleração da gravidade para os deslocamentos coletados pelo aluno 1 e assim por diante para as demais colunas.
+
+## Cálculo do valor provável
+
+O valor provável da aceleração será calculado de acordo com a seguinte formula :
+
+\begin{align}\label{eq:valorProvavel}
+V_{p} = \frac{acel_1 + acel_2 + acel_3 + acel_4}{4}
+\end{align}
+
+Esta fórmula utiliza os dados da tabela de aceleração da gravidade por aluno apresentada na seção anterior. O resultado obtido foi: 
+
+```{r echo=F}
+Vp <- as.matrix(mean(dfAceleracaoMean))
+rownames(Vp) <- c("$V_p$ (m/$s^2$)")
+knitr::kable(Vp, digits = 5, caption = 'Valor provável da aceleração da gravidade.')
+```
+
+## Estimativa do erro
+
+Esta seção apresenta as estimativas dos erros do valor provável da aceleração da gravidade. A fórmula seguinte será utilizará para realizar este cálculo:
+
+\begin{align}\label{eq:erromedio}
+e_n = \abs{V_p - acel_n}
+\end{align}
+
+O que resultou nos dados da tabela seguinte:
+
+```{r echo=F}
+dfErro <- data.frame(erro=abs(dfAceleracaoMean - Vp[1,1]))
+knitr::kable(t(as.matrix(dfErro)), digits = 10, row.names = F, col.names = c("$$e_1$$ (m/$s^2$)", "$$e_2$$ (m/$s^2$)", "$$e_3$$ (m/$s^2$)", "$$e_4$$ (m/$s^2$)"), caption = 'Erro em relação ao valor provável.')
 ```
 
 
-A partir dos erros médios dos tempos de queda, podemos estimar a variação de erro inferior da aceleração da gravidade. A tabela abaixo apresenta os resultados:
+Agora que temos o valor do erro em relação ao valor provável para cada amostra, podemos calcular o erro médido utilizando a seguinte fórmula:
 
+\begin{align}\label{eq:valorProvavel}
+e_m = \frac{e_{1} + e_{2} + e_{3} + e_{4}}{4}
+\end{align}
 
-```{r echo=F}
-dfAceleracaoInferior <- (dist * 2) / (dfTempoQueda[5,]+dfTempoQuedaErro[5,])^2
-rownames(dfAceleracaoInferior) <- c("Aceleração")
-aceleracaoInf <- mean(as.numeric(dfAceleracaoInferior))
-knitr::kable(dfAceleracaoInferior, digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Intervalo inferior da estimativa das acelerações da gravidade para cada altura da esfera.')
-```
-
-A média das acelerações é:
-
-   `r aceleracaoInf` $m/s^2$.  
-
-Por fim, estimamos a variação de erro superior da aceleracao da gravidade. A próxima tabela apresenta os resultados obtidos.
+O que resultou no seguinte valor:
 
 ```{r echo=F}
-dfAceleracaoSuperior <- (dist * 2) / (dfTempoQueda[5,]-dfTempoQuedaErro[5,])^2
-rownames(dfAceleracaoSuperior) <- c("Aceleração")
-aceleracaoSup <- mean(as.numeric(dfAceleracaoSuperior))
-knitr::kable(dfAceleracaoSuperior, digits = 5, col.names=c("0.10 m (s)", "0.15 m (s)", "0.20 m (s)", "0.25 m (s)", "0.30 m (s)", "0.35 m (s)"), caption = 'Intervalo superior das estimativas das acelerações da gravidade para cada altura da esfera.')
+erroMedio <- colSums(dfErro) / nrow(dfErro)
+erroMedio <- data.frame(regua = erroMedio)
+rownames(erroMedio) <- c("$$e_m$$")
+knitr::kable(erroMedio, digits = 10, col.names=c("Erro médio(m/$s^2$)"), caption = 'Erro médio.')
 ```
-
-A média das acelerações é:
-
-   `r aceleracaoSup` $m/s^2$.  
-
 
 Conclusão
 ====================
 
-De acordo com os dados apresentados, pode-se concluir que a estimativa da aceleração da gravidade está no seguinte intervalo:
+De acordo com os dados apresentados, pode-se concluir que a estimativa da aceleração da gravidade para este experimento está no seguinte intervalo:
 
-```{r echo=F}
-dfIntervalo <- data.frame(inf=c(aceleracaoInf), sup=c(aceleracaoSup))
-knitr::kable(dfIntervalo, digits = 5, col.names=c("Intervalo inferior", "Intervalo superior"), caption = 'Intervalo de estimativa da aceleração da gravidade')
-```
+
+\begin{center}
+`r Vp[1,1]` $\pm$ `r erroMedio[1,1]` $m/s^2$
+\end{center}
+
+# Referências
