@@ -1,0 +1,124 @@
+---
+title: |
+ | UNIVERSIDADE FEDERAL DO AMAZONAS
+ | INSTITUTO DE CIÊNCIAS EXATAS
+ | BACHARELADO EM MATEMÁTICA
+subtitle: | 
+    | LABORATÓRIO DE FÍSICA I
+    | RELATÓRIO IV
+author: | 
+    | Gabriel Bezerra de M. Armelin - 21550325
+    | Mario Alves Pardo Junior - 21553964
+    | Jonas Miranda Cascais Júnior - 21553844
+    | Fabrício Yuri Costa da Silva - 21454545
+framework: io2012
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    # number_sections: false
+    template: template.latex
+documentclass: report
+fontsize: 11pt
+geometry: top=3cm, left=2.5cm, right=2.5cm, bottom=2.5cm
+papersize: a4paper
+professor: José Pedro Cordeiro
+city: Manaus
+year: 2016
+bibliography: bibliography.bib
+job: INDT
+mode: selfcontained
+header-includes: 
+    - \usepackage{verbatim}
+    - \usepackage[utf8]{inputenc}
+    - \usepackage[brazil]{babel}
+    - \usepackage{indentfirst}  
+    - \usepackage{amstext}      
+    - \usepackage{amssymb,latexsym}
+    - \usepackage{mathtools}       
+    - \usepackage[T1]{fontenc}     
+    - \usepackage{multicol}
+    - \usepackage[brazil]{babel}
+    - \usepackage{amsmath}
+    - \usepackage{bbm}
+    - \usepackage{commath}
+    - \usepackage{graphicx, color}
+    - \setlength{\parskip}{0.3cm}
+nocite: | 
+  @ref1, @ref2, @ref3
+---
+
+
+```{r setup, include=FALSE}
+suppressWarnings(library("knitr"))
+suppressWarnings(library("ggplot2"))
+suppressWarnings(library("grid"))
+suppressWarnings(library("gridExtra"))
+opts_chunk$set(dev = 'pdf')
+set.seed(12432) 
+options(digits = 10) 
+library(printr)
+```
+
+
+Introdução
+===================
+
+Este relatório descreve e analisa o experimento realizado em sala de aula na disciplina *Laboratório de Física I* do curso de Bacharelado em Matemática no dia 01 de julho de 2016.
+
+A próxima seção explicará detalhamendamente o experimento realizado.
+
+Parte Experimental
+====================
+
+O experimento consiste em caracterizar o movimento retilíneo uniforme através da análise de dados e gráficos. Para isto foram utilizados os seguintes materias e aparelhos:
+
+* Trilho de ar e carrinho: aparelho formado por um trilho posicionado horizontalmente responsável pela trajetória retilínea do carrinho e um carrinho encarrilhado neste trilho. O carrinho se movimenta quando um compressor injeta ar por buraquinhos no trilho.
+
+* Compressor de ar: responsável pela injeção de ar no trilho de ar. A injeção de ar causa a movimentação do carrinho.
+
+* Sensores de movimento: Há dois sensores de movimento. Um no início da trajétória e é responsável por registrar o posicionamento inicial. O segundo sensor foi utilizado para registrar o posicionamento final da medição.
+
+* Cronômetro digital: aparelho responsável por iniciar a marcação de tempo a partir do recebimento das informações dos sensores de movimento.
+
+* Outros materias utilizados foram: barbante, porta-peso, peso e polia. O barbante foi preso ao carrinho e ao porta-peso através de uma polia.
+
+O experimento consiste de duas etapas:
+
+1. A primeira etapa consistiu em medir o tempo que o carrinho demorou para se deslocar de um ponto inicial a uma sequência de pontos finals iniciando em 120cm e terminando 170cm.
+
+2. A segunda etapa consistiu em medir o tempo que o carrinho demorou para se deslocar de um ponto inicial a um ponto final variando a quantidade de pesos no porta-peso.
+
+
+
+A próxima seção explicará em detalhes cada uma destas etapas.
+
+
+Análise de Dados
+====================
+
+Esta seção apresenta os dados e cálculos em cada atividade descrita na seção *Parte Experimental*.
+
+## Coleta das amostras
+
+Na fase1, coletamos amostras de tempo para vários deslocamentos do carrinho. Os valores coletados estão na tabela a seguir:
+
+```{r echo=F}
+dfDeslocamentoTempo <- data.frame("deslocamento"=c(1.2, 1.3, 1.4, 1.5, 1.6, 1.7), "tempo"=c(1.077, 1.321, 1.533, 1.7, 1.853, 2.013))
+knitr::kable(dfDeslocamentoTempo, digits = 5, col.names=c("Deslocamentos (m)", "Tempos (s)"), caption = 'Amostras dos deslocamentos e tempos de duração.')
+```
+
+Na fase 2, coletamos amostras de tempo para vários pesos no porta-peso. A próxima tabela apresenta os valores obtidos.
+
+```{r echo=F}
+dfPesoTempo <- data.frame("peso"=c(11, 12, 13, 14, 15, 16, 17), "tempo"=c(1.181, 1.123, 1.060, 0.9979, 0.9737, 0.9270, 0.9166))
+knitr::kable(dfPesoTempo, digits = 5, col.names=c("Pesos (g)", "Tempos (s)"), caption = 'Amostras dos pesos e tempos de duração.')
+```
+
+Conclução
+====================
+
+
+
+Referências
+====================
