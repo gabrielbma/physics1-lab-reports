@@ -219,7 +219,7 @@ ggplot(data=dfVelocidadeTempo, aes(x=tempo, y=velocidade)) +
 Na etapa 2, coletamos amostras de tempo para vários pesos no porta-peso. A próxima tabela apresenta os valores obtidos.
 
 ```{r echo=F}
-dfPesoTempo <- data.frame("Massa porta-peso"=c(0, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017), "tempo"=c(0, 1.181, 1.123, 1.060, 0.9979, 0.9737, 0.9270, 0.9166))
+dfPesoTempo <- data.frame("Massa porta-peso"=c(0, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017), "tempo"=c(0, 1.116, 1.0956, 1.0486, 1.0076, 0.9566, 0.92263, 0.91466))
 knitr::kable(dfPesoTempo, digits = 5, col.names=c("Pesos (kg)", "Tempos (s)"), caption = 'Amostras dos pesos e tempos de duração.')
 ```
 
