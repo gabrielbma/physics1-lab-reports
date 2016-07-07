@@ -18,6 +18,7 @@ output:
     toc_depth: 3
     # number_sections: false
     template: template.latex
+    latex_engine: xelatex
 documentclass: report
 fontsize: 11pt
 geometry: top=3cm, left=2.5cm, right=2.5cm, bottom=2.5cm
@@ -28,23 +29,20 @@ year: 2016
 bibliography: bibliography.bib
 job: INDT
 mode: selfcontained
-header-includes: 
-    - \usepackage{verbatim}
-    - \usepackage[utf8]{inputenc}
-    - \usepackage[brazil]{babel}
-    - \usepackage{indentfirst}  
-    - \usepackage{amstext}      
-    - \usepackage{amssymb,latexsym}
-    - \usepackage{mathtools}       
-    - \usepackage[T1]{fontenc}     
-    - \usepackage{multicol}
-    - \usepackage[brazil]{babel}
-    - \usepackage{amsmath}
-    - \usepackage{bbm}
-    - \usepackage{commath}
-    - \usepackage{graphicx, color}
-    - \setlength{\parskip}{0.3cm}
-    - \usepackage{tikz}
+#header-includes: 
+#    - \usepackage{verbatim}
+#    - \usepackage[utf8]{inputenc}
+    # - \usepackage[brazil]{babel}
+    # - \usepackage{indentfirst}  
+    # - \usepackage{mathtools}       
+    # - \usepackage[T1]{fontenc}     
+    # - \usepackage{multicol}
+    # - \usepackage[brazil]{babel}
+    # - \usepackage{bbm}
+    # - \usepackage{commath}
+    # - \usepackage{graphicx, color}
+    # - \setlength{\parskip}{0.3cm}
+    # - \usepackage{tikz}
 nocite: | 
   @ref1, @ref2, @ref3
 ---
@@ -59,6 +57,15 @@ suppressWarnings(library("tikzDevice"))
 opts_chunk$set(dev = 'pdf')
 set.seed(12432) 
 options(digits = 10) 
+
+opts_chunk$set(comment=NA, collapse=T, cache=T, autodep=T,
+               dev="tikz", fig.width=4.5, fig.height=2.75,
+               size ='footnotesize',
+               dev.args=list(pointsize=9),
+               message=F, warning=F, autodep=T)
+options(tikzDefaultEngine="xetex")
+
+
 library(printr)
 ```
 
@@ -154,28 +161,16 @@ knitr::kable(dfAceleracaoTempo, col.names = c("$\\Delta{x}$ (m)", "t ($s$)", "a 
 
 A seguir, é apresentado o gráfico da aceleração por intervalor de tempo:
 
-```{r echo=F,, include=FALSE}
-tikz(file = "plot_test.tex", width = 4, height = 2)
-plot <- ggplot(data=dfAceleracaoTempo, aes(x=tempo, y=aceleracao)) +
+
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfAceleracaoTempo, aes(x=tempo, y=aceleracao)) +
        #stat_smooth(method = "lm") +
-      stat_smooth(method = "lm", formula = y ~ x + I(x^2), size = 1) +
+       stat_smooth(method = "lm", formula = y ~ x + I(x^2), size = 1) +
        geom_point() +
        xlab("Tempo (s)") + ylab("Aceleração ($m/s^2$)") +
        ggtitle("Aceleração x Tempo") + 
       theme(axis.text=element_text(size=9), axis.title=element_text(size=10))
-print(plot)
-dev.off()
 ```
-
-\begin{figure}
-		%Do not try to scale figure in .tex or you loose font size consistency
-	    	\centering
-		%The code to input the plot is extremely simple
-		\input{plot_test.tex}
-		%Captions and Labels can be used since this is a figure environment
-		\caption{Sample output from tikzDevice}
-		\label{plot:test}
-	\end{figure}
 
 
 Agora que temos a aceleração, podemos calcular a velocidade utilizando a seguinte fórmula:

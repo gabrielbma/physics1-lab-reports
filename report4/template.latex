@@ -14,6 +14,22 @@ $endif$
 \titleformat{\chapter}{\normalfont\huge}{\thechapter.}{20pt}{\huge}
 
 \usepackage{amssymb,amsmath}
+\usepackage{amstext}      
+\usepackage{amssymb,latexsym}
+\usepackage{verbatim}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{indentfirst}  
+\usepackage{mathtools}       
+\usepackage[T1]{fontenc}     
+\usepackage{multicol}
+\usepackage[brazil]{babel}
+\usepackage{bbm}
+\usepackage{commath}
+\usepackage{graphicx, color}
+\setlength{\parskip}{0.3cm}
+\usepackage{tikz}
+
 \usepackage{ifxetex,ifluatex}
 \usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
