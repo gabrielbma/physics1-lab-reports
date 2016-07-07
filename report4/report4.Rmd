@@ -7,10 +7,10 @@ subtitle: |
     | LABORATÓRIO DE FÍSICA I
     | RELATÓRIO IV
 author: | 
-    | Gabriel Bezerra de M. Armelin - 21550325
-    | Mario Alves Pardo Junior - 21553964
-    | Jonas Miranda Cascais Júnior - 21553844
     | Fabrício Yuri Costa da Silva - 21454545
+    | Gabriel Bezerra de M. Armelin - 21550325
+    | Jonas Miranda Cascais Júnior - 21553844
+    | Laise Alves Pimentel - 21202395
 framework: io2012
 output: 
   pdf_document:
