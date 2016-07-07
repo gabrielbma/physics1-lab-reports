@@ -71,9 +71,14 @@ A próxima seção explicará detalhamendamente o experimento realizado.
 Parte Experimental
 ====================
 
+```{r initialData, include=FALSE}
+massaPortaPeso <- 0.010
+massaCarrinho <- 0.1898
+```
+
 O experimento consiste em caracterizar o movimento retilíneo uniforme através da análise de dados e gráficos. Para isto foram utilizados os seguintes materias e aparelhos:
 
-* Trilho de ar e carrinho: aparelho formado por um trilho posicionado horizontalmente responsável pela trajetória retilínea do carrinho e um carrinho encarrilhado neste trilho. O carrinho se movimenta quando um compressor injeta ar por buraquinhos no trilho.
+* Trilho de ar e carrinho: aparelho formado por um trilho posicionado horizontalmente responsável pela trajetória retilínea do carrinho e um carrinho encarrilhado neste trilho. O carrinho se movimenta quando um compressor injeta ar por buraquinhos no trilho. A massa do carrinho é `r massaCarrinho` kg.
 
 * Compressor de ar: responsável pela injeção de ar no trilho de ar. A injeção de ar causa a movimentação do carrinho.
 
@@ -81,7 +86,7 @@ O experimento consiste em caracterizar o movimento retilíneo uniforme através 
 
 * Cronômetro digital: aparelho responsável por iniciar a marcação de tempo a partir do recebimento das informações dos sensores de movimento.
 
-* Outros materias utilizados foram: barbante, porta-peso, peso e polia. O barbante foi preso ao carrinho e ao porta-peso através de uma polia.
+* Outros materias utilizados foram: barbante, porta-peso, peso e polia. O barbante foi preso ao carrinho e ao porta-peso através de uma polia. A massa do porta-peso é `r massaPortaPeso` kg.
 
 O experimento consiste de duas etapas:
 
@@ -101,21 +106,97 @@ Esta seção apresenta os dados e cálculos em cada atividade descrita na seçã
 
 ## Coleta das amostras
 
-Na fase1, coletamos amostras de tempo para vários deslocamentos do carrinho. Os valores coletados estão na tabela a seguir:
+Na etapa 1, coletamos amostras de tempo para vários deslocamentos do carrinho. O carrinho foi amarrado ao barbante que foi amarrado ao porta-peso. Nesta etapa, o porta-peso não recebeu nenhum peso adicional. Os valores coletados estão na tabela a seguir:
 
 ```{r echo=F}
-dfDeslocamentoTempo <- data.frame("deslocamento"=c(1.2, 1.3, 1.4, 1.5, 1.6, 1.7), "tempo"=c(1.077, 1.321, 1.533, 1.7, 1.853, 2.013))
+dfDeslocamentoTempo <- data.frame("deslocamento"=c(0, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7), "tempo"=c(0, 1.077, 1.321, 1.533, 1.7, 1.853, 2.013))
 knitr::kable(dfDeslocamentoTempo, digits = 5, col.names=c("Deslocamentos (m)", "Tempos (s)"), caption = 'Amostras dos deslocamentos e tempos de duração.')
 ```
 
-Na fase 2, coletamos amostras de tempo para vários pesos no porta-peso. A próxima tabela apresenta os valores obtidos.
+A seguir, é apresentado o gráfico destas duas variáveis:
 
-```{r echo=F}
-dfPesoTempo <- data.frame("peso"=c(11, 12, 13, 14, 15, 16, 17), "tempo"=c(1.181, 1.123, 1.060, 0.9979, 0.9737, 0.9270, 0.9166))
-knitr::kable(dfPesoTempo, digits = 5, col.names=c("Pesos (g)", "Tempos (s)"), caption = 'Amostras dos pesos e tempos de duração.')
+```{r echo=F,  fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfDeslocamentoTempo, aes(x=tempo, y=deslocamento)) +
+       #stat_smooth(method = "lm") +
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Deslocamento (m)") +
+       ggtitle("Deslocamento x Tempo")
 ```
 
-Conclução
+Agora que temos os dados de deslocamento e tempo, podemos calcular a aceleração utilizando a fórmula abaixo:
+
+\begin{align}\label{eq:aceleracao}
+\Delta{x} =  + v_0t + \frac{1}{2}at^2
+\end{align}
+
+Onde: 
+
+$\Delta{x}$: representa o deslocamento percorrido pelo carrinho. Os valores estão apresentados na tabela anterior para a posição final. A posição inicial é 0;
+
+$v_0$: representa a velocidade inicial. Neste caso, ela é 0;
+
+$t$: representa o momento que se deseja determinar a aceleração;
+
+$a$: a aceleração que desejamos calcular a partir do deslocamento e tempo;
+
+Após realizarmos estes cálculos, obtemos o seguinte resultado para a aceleração:
+
+```{r echo=F}
+dfAceleracaoTempo <- dfDeslocamentoTempo
+dfAceleracaoTempo$aceleracao <- (dfDeslocamentoTempo[,1] * 2) / (dfDeslocamentoTempo[,2]^2)
+dfAceleracaoTempo[1,3] <- 0
+knitr::kable(dfAceleracaoTempo,  caption = 'Aceleração $m/s^2$ X Tempo')
+```
+
+A seguir, é apresentado o gráfico da aceleração por intervalor de tempo:
+
+```{r echo=F,  fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfAceleracaoTempo, aes(x=tempo, y=aceleracao)) +
+       #stat_smooth(method = "lm") +
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Aceleracao (m/s^2)") +
+       ggtitle("Aceleração x Tempo")
+```
+
+
+Agora que temos a aceleração, podemos calcular a velocidade utilizando a seguinte fórmula:
+
+\begin{align}\label{eq:velocidade}
+v^2 = v_0{^2} + 2a\Delta{x}
+\end{align}
+
+Onde:
+
+---------
+
+
+Após realizarmos estes cálculos, obtemos o seguinte resultado para a velocidade:
+```{r echo=F}
+dfVelocidadeTempo <- dfAceleracaoTempo
+dfVelocidadeTempo$velocidade <- sqrt(2*dfAceleracaoTempo[,3]*dfAceleracaoTempo[,1])
+knitr::kable(dfVelocidadeTempo,  caption = 'Velocidade m/s')
+```
+
+A seguir, é apresentado o gráfico da velocidade por intervalor de tempo:
+
+```{r echo=F,  fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfVelocidadeTempo, aes(x=tempo, y=velocidade)) +
+       #stat_smooth(method = "lm") +
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Velocidade (m/s)") +
+       ggtitle("Velocidade x Tempo")
+```
+
+
+
+Na etapa 2, coletamos amostras de tempo para vários pesos no porta-peso. A próxima tabela apresenta os valores obtidos.
+
+```{r echo=F}
+dfPesoTempo <- data.frame("Massa porta-peso"=c(0, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017), "tempo"=c(0, 1.181, 1.123, 1.060, 0.9979, 0.9737, 0.9270, 0.9166))
+knitr::kable(dfPesoTempo, digits = 5, col.names=c("Pesos (kg)", "Tempos (s)"), caption = 'Amostras dos pesos e tempos de duração.')
+```
+
+Conclusão
 ====================
 
 
