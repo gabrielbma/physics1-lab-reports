@@ -9,6 +9,7 @@ subtitle: |
 author: | 
     | Fabrício Yuri Costa da Silva - 21454545
     | Gabriel Bezerra de M. Armelin - 21550325
+    | Kethely Adelaide Acipar Rocha - 21252514
     | Jonas Miranda Cascais Júnior - 21553844
     | Laise Alves Pimentel - 21202395
 framework: io2012
@@ -82,7 +83,7 @@ Parte Experimental
 
 ```{r initialData, include=FALSE}
 massaPortaPeso <- 0.010
-massaCarrinho <- 0.1898
+massaCarrinho <- 0.1901
 ```
 
 O experimento consiste em caracterizar o movimento retilíneo uniforme através da análise de dados e gráficos. Para isto foram utilizados os seguintes materias e aparelhos:
@@ -113,7 +114,7 @@ Análise de Dados
 
 Esta seção apresenta os dados e cálculos em cada atividade descrita na seção *Parte Experimental*.
 
-## Coleta das amostras
+## Deslocamento X Tempo
 
 Na etapa 1, coletamos amostras de tempo para vários deslocamentos do carrinho. O carrinho foi amarrado ao barbante que foi amarrado ao porta-peso. Nesta etapa, o porta-peso não recebeu nenhum peso adicional. Os valores coletados estão na tabela a seguir:
 
@@ -135,6 +136,8 @@ ggplot(data=dfDeslocamentoTempo, aes(x=tempo, y=deslocamento)) +
        ggtitle("Deslocamento x Tempo") +
        scale_y_continuous(breaks = round(seq(min(dfDeslocamentoTempo$deslocamento), max(dfDeslocamentoTempo$deslocamento), by = 0.2),1))
 ```
+
+## Aceleração X Tempo
 
 Agora que temos os dados de deslocamento e tempo, podemos calcular a aceleração utilizando a fórmula abaixo:
 
@@ -165,7 +168,6 @@ knitr::kable(dfAceleracaoTempo, col.names = c("$\\Delta{x}$ (m)", "t ($s$)", "a 
 
 A seguir, é apresentado o gráfico da aceleração por intervalor de tempo:
 
-
 ```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
 ggplot(data=dfAceleracaoTempo, aes(x=tempo, y=aceleracao)) +
        #stat_smooth(method = "lm") +
@@ -176,6 +178,14 @@ ggplot(data=dfAceleracaoTempo, aes(x=tempo, y=aceleracao)) +
       theme(axis.text=element_text(size=9), axis.title=element_text(size=10))
 ```
 
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+aceleracaoMedia <- mean(dfAceleracaoTempo$aceleracao)
+```
+
+A aceleração pode ser resumida com a média das acelerações, o valor obtido é: `r aceleracaoMedia` $m/s^2$
+
+
+## Velocidade X Tempo
 
 Agora que temos a aceleração, podemos calcular a velocidade utilizando a seguinte fórmula:
 
@@ -214,18 +224,86 @@ ggplot(data=dfVelocidadeTempo, aes(x=tempo, y=velocidade)) +
        ggtitle("Velocidade x Tempo")
 ```
 
--------------------------------- (Incompleto)
-
-Na etapa 2, coletamos amostras de tempo para vários pesos no porta-peso. A próxima tabela apresenta os valores obtidos.
+## Massa X Tempo
 
 ```{r echo=F}
-dfPesoTempo <- data.frame("Massa porta-peso"=c(0, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017), "tempo"=c(0, 1.116, 1.0956, 1.0486, 1.0076, 0.9566, 0.92263, 0.91466))
-knitr::kable(dfPesoTempo, digits = 5, col.names=c("Pesos (kg)", "Tempos (s)"), caption = 'Amostras dos pesos e tempos de duração.')
+deslocamentoCarrinho <- 0.3
 ```
+
+
+Na etapa 2, coletamos amostras de tempo que o carrinho demorou para um deslocamento de constante de `r deslocamentoCarrinho` metros variando o peso do porta-peso de 1g em 1g iniciando em 11g. A próxima tabela apresenta os valores obtidos.
+
+```{r echo=F}
+massaTotal <- massaCarrinho + massaPortaPeso + c(0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007)
+dfMassaTempo <- data.frame("massa"=massaTotal, "tempo"=c(1.116, 1.0956, 1.0486, 1.0076, 0.9566, 0.92263, 0.91466))
+knitr::kable(dfMassaTempo, digits = 5, col.names=c("$M_{total}$ (kg)", "t (s)"), caption = 'Amostras dos pesos e tempos de duração.')
+```
+
+A massa total foi calculada pela fórmula:
+
+\begin{align}\label{eq:massaTotal}
+M_{total} = M_{carrinho} + M_{porta-peso} + M_{peso}
+\end{align}
+
+Onde
+
+$M_{carrinho}$: é `r massaCarrinho` kg.
+
+$M_{porta-peso}$: é `r massaPortaPeso` kg.
+
+$M_{peso}$: são os valores 0,001 0,002, 0,003 0,004 0,005 0,006 e 0,007 gramas.
+
+A seguir, é apresentado o gráfico destas duas variáveis:
+
+```{r echo=F,  fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfMassaTempo, aes(x=tempo, y=massa)) +
+       #stat_smooth(method = "lm") +
+       stat_smooth(method = "lm", formula = y ~ x + I(x^2), size = 1) +
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Massa total (kg)") +
+       ggtitle("Massa total x Tempo")
+```
+
+Como mostrado, há uma relação inversa entre a massas do porta-peso e tempo que o carrinho demorou para atingir o ponto final. Ou seja, quanto maior a massa menor será o tempo para o carrinho atingir o ponto final.
+
+## Aceleração X Massa
+
+A seção anterior mostrou a relação Massa total X Tempo decorrido para cada variação de peso do porta-peso.  Primeiramente, precisa-se calcular a aceleração para cada mudança de peso no porta-peso. A tabela abaixo apresenta os valores obtidos:
+
+```{r echo=F}
+dfMassaAceleracao <- dfMassaTempo
+dfMassaAceleracao$aceleracao <- (deslocamentoCarrinho*2) / (dfMassaAceleracao$tempo^2)
+knitr::kable(dfMassaAceleracao, digits = 5, col.names=c("Massa total (kg)", "Tempos (s)", "Aceleração ($m/s^2)$"), caption = 'Acelerações para os pesos do porta-peso.')
+```
+
+Para este cálculo, foi utilizado o deslocamento constante do carrinho previamente citado (`r deslocamentoCarrinho` m) e a fórmula 3.1.
+
+Agora que temos o valor da aceleração para cada peso do porta-peso podemos colocar estas informações em um gráfico apresentado abaixo:
+
+```{r echo=F,  fig.height=2, fig.width=4, fig.align="center"}
+fitMassaAceleracao <- lm(aceleracao ~ massa, data = dfMassaAceleracao)
+coefMassaAceleracao <- coef(fitMassaAceleracao)
+ggplot(data=dfMassaAceleracao, aes(x=massa, y=aceleracao)) +
+       #stat_smooth(method = "lm") +
+       #stat_smooth(method = "lm", formula = y ~ x + I(x^2), size = 1) +
+       geom_abline(intercept = coefMassaAceleracao[1], slope = coefMassaAceleracao[2]) +
+       geom_point() +
+       xlab("Massa (kg)") + ylab("Aceleração ($m/s^2$)") +
+       ggtitle("Aceleração X Massa")
+```
+
 
 Conclusão
 ====================
 
+A seção anterior mostrou o gráfico de Aceleração X Massa. Com este resultado obtido, pode-se determinar a força resultante calculando-se a área da região triangular mostrada na seção anterior.
+
+```{r echo=F}
+area <- ((0.2071 - 0.2011) * (0.71719 - 0.48175)) / 2
+```
+\begin{align}\label{eq:massaTotal}
+F_r = \frac{((0.2071 - 0.2011) * (0.71719 - 0.48175))}{2} = `r area` N
+\end{align}
 
 
 Referências
