@@ -87,7 +87,10 @@ Procedimento Experimental
 4. Repita este procedimento para as alturas de 300, 400 e 500 mm.
 
 ```{r initialData, include=FALSE}
-raioCilindro <- 0.01035
+raioCilindro <- 0.0025
+rv <- 0.01035
+massaCilindro <- 436
+aceleracaoGravidade <- 9.8
 ```
 
 Análise de Dados
@@ -129,7 +132,7 @@ Onde:
 
 v: é a velocidade instântanea que desejamos obter;
 
-2*$r_v$: espaço $\Delta{S}$ que fica na escuridão. $r_v$ é o raio do cilindro que mede `r raioCilindro*1000` mm.
+2*$r_v$: espaço $\Delta{S}$ que fica na escuridão. $r_v$ é o raio do cilindro que mede `r rv*1000` mm.
 
 $T_{iM}$: tempo instântaneo médio que foi calculado e apresentado na seção anterior.
 
@@ -139,7 +142,7 @@ A tabela seguinte mostra o valor da velocidade instantânea:
 
 ```{r echo=F}
 dfVelocidadeTempo <- dfDeslocamentoTempo
-dfVelocidadeTempo$Vi <- (2*raioCilindro) / dfVelocidadeTempo$TiM
+dfVelocidadeTempo$Vi <- (2*rv) / dfVelocidadeTempo$TiM
 knitr::kable(dfVelocidadeTempo, digits = 5, 
              caption = 'Velocidade instantanea', 
              col.names=c("$\\Delta{s}$ (m)", "T1 (s)", "T2 (s)", "T3 (s)", "TM (s)", "Ti1 (s)", "Ti2 (s)", "Ti3 (s)", "TiM (s)", "Vi (m/s)"))
@@ -175,6 +178,11 @@ s = `r sprintf("%.5f",coef(fitDeslocamentoTempo)[3])` * T_{iM}^2 `r sprintf("%+.
 
 A linha azul do gráfico acima foi generada utilizando esta fórmula. Observe que ela aproximou muito bem os dados do experimento.
 
+\begin{align}\label{eq:deslocamentoTeorico}
+  s(t) = \frac{1}{2}\times\frac{mg}{m+\frac{I_z}{r^2}}t^2
+\end{align}
+
+
 ## Velocidade x Tempo
 
 O próximo gráfico mostra o relacionamento da velocidade ($V_i$) e o tempo instantâneo médio ($T{iM}$) mostrados na tabela anterior.
@@ -203,14 +211,103 @@ v =  `r sprintf("%.5f",coef(fitVelocidadeTempo)[2])` * T_{iM} `r sprintf("%+.5f"
 
 A linha azul do gráfico acima foi generada utilizando esta fórmula. Observe que ela aproximou muito bem os dados do experimento.
 
+## Estimativa do momento de inércia
 
-## Cálculo das energias potencial, translacional e de rotação
+Esta seção explica o cálculo realizado para estimar o momento de inércia do disco ao redor de seu eixo de rotação.
+
+Podemos calcular o momento de inércia $I_z$ igualando o valor do coeficiente com termo de segundo grau da equação \ref{eq:estimativaDeslocamento} (`r sprintf("%.5f",coef(fitDeslocamentoTempo)[3])`) com o coeficiente da equação \ref{eq:deslocamentoTeorico} resultando na seguinte equação:
+
+\begin{align}\label{eq:momentoInercia1}
+`r sprintf("%.5f",coef(fitDeslocamentoTempo)[3])` = \frac{1}{2} \times \frac{mg}{m+\frac{I_z}{r^2}}
+\end{align}
+
+Onde:
+
+$m$: é a massa do cilindro. Seu valor aproximado é `r massaCilindro` g;
+
+$g$: é a aceleração da gravidade. Seu valor aproximado é `r aceleracaoGravidade` $m/s^2$;
+
+$I_z$: momento de inércia que deseja-se obter;
+
+$r$: raio do cilindro. Seu valor aproximado é `r raioCilindro` m.
+
+Resolvando esta equação para $I_z$, obtemos o seguinte resultado:
+
+```{r echo=F}
+Iz1 <- (raioCilindro^2*massaCilindro*aceleracaoGravidade)
+Iz2 <- massaCilindro*raioCilindro^2*coef(fitDeslocamentoTempo)[3]
+Iz3 <- 2 * coef(fitDeslocamentoTempo)[3]
+Iz <- (Iz1 - Iz2) / Iz3
+```
+
+\begin{align}\label{eq:momentoInercia2}
+I_z = `r Iz`
+\end{align}
+
+## Cálculo das energias potencial, translacional e rotacional
+
+```{r echo=F}
+dfEnergiaTempo <- dfDeslocamentoTempo
+dfEnergiaTempo$Ep <- abs(-1*massaCilindro * aceleracaoGravidade *
+      (coef(fitDeslocamentoTempo)[3] * dfEnergiaTempo$TiM^2 + 
+      coef(fitDeslocamentoTempo)[2] * dfEnergiaTempo$TiM + 
+      coef(fitDeslocamentoTempo)[1]))
+dfEnergiaTempo$Et <- (massaCilindro / 2) * 
+      (coef(fitVelocidadeTempo)[2] * dfEnergiaTempo$TiM +
+       coef(fitVelocidadeTempo)[1])^2
+dfEnergiaTempo$Er <- (Iz / 2) * 
+      ((coef(fitVelocidadeTempo)[2] * dfEnergiaTempo$TiM +
+       coef(fitVelocidadeTempo)[1]) / raioCilindro )^2
+dfEnergiaTempo$E <- dfEnergiaTempo$Ep + dfEnergiaTempo$Et + dfEnergiaTempo$Er
+dfEnergiaTempo <- dfEnergiaTempo[c("TiM", "Ep", "Et", "Er", "E")]
+knitr::kable(dfEnergiaTempo, digits = 5, 
+             caption = 'Energias', 
+             col.names=c("TiM", "|Ep|", "Et", "Er", "E"))
+```
+
 
 ## Energia potencial x Tempo
 
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfEnergiaTempo, aes(x=TiM, y=Ep)) +
+       #scale_y_log10() +
+       #scale_x_log10() +
+       stat_smooth(method = "lm", se=F) +
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Energia potencial") +
+       ggtitle("Energia potencial x Tempo")
+       #theme(axis.text=element_text(size=9), axis.title=element_text(size=10))
+```
+
+
 ## Energia translacional x Tempo
 
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfEnergiaTempo, aes(x=TiM, y=Et)) +
+       #scale_y_log10() +
+       #scale_x_log10() +
+       stat_smooth(method = "lm", se=F) +
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Energia translacional") +
+       ggtitle("Energia translacional x Tempo")
+       #theme(axis.text=element_text(size=9), axis.title=element_text(size=10))
+```
+
+
 ## Energia  rotacional x Tempo
+
+
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfEnergiaTempo, aes(x=TiM, y=Er)) +
+       #scale_y_log10() +
+       #scale_x_log10() +
+       stat_smooth(method = "lm", se=F) +
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Energia rotacional") +
+       ggtitle("Energia rotacioal x Tempo")
+       #theme(axis.text=element_text(size=9), axis.title=element_text(size=10))
+```
+
 
 Conclusão
 ====================
