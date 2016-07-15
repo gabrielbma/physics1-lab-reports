@@ -87,7 +87,7 @@ Procedimento Experimental
 4. Repita este procedimento para as alturas de 300, 400 e 500 mm.
 
 ```{r initialData, include=FALSE}
-raioCilindro <- 0.0025
+raioEixo <- 0.0025
 rv <- 0.01035
 massaCilindro <- 436
 aceleracaoGravidade <- 9.8
@@ -104,13 +104,22 @@ Esta seção apresenta os dados e cálculos em cada atividade descrita na seçã
 Esta seção apresenta os dados coletados durante o experimento e os cálculos de médias para esses dados.
 
 ```{r echo=F}
-dfDeslocamentoTempo <- data.frame("S"=c(0.2, 0.3, 0.4, 0.5),
-                                  "T1"=c(2.3845, 3.5435, 4.6040, 5.4345), 
-                                  "T2"=c(2.3779, 3.7292, 4.5620, 5.5350), 
-                                  "T3"=c(2.3724, 3.5699, 4.6861, 5.4445), 
-                                  "Ti1"=c(0.350, 0.248, 0.190, 0.168),
-                                  "Ti2"=c(0.356, 0.249, 0.193, 0.167),
-                                  "Ti3"=c(0.337, 0.238, 0.193, 0.168))
+dfDeslocamentoTempo <- data.frame(
+                                  "S"=c(0.2, 0.3, 0.4, 0.5, 0.6),
+                                  "T1"=c(4.158, 4.969, 5.794, 6.403, 6.949), 
+                                  "T2"=c(4.156, 4.883, 5.822, 6.436, 6.926), 
+                                  "T3"=c(4.144, 4.983, 5.828, 6.441, 7.011), 
+                                  "Ti1"=c(0.080, 0.065, 0.057, 0.055, 0.053),
+                                  "Ti2"=c(0.082, 0.065, 0.059, 0.056, 0.054),
+                                  "Ti3"=c(0.082, 0.067, 0.057, 0.055, 0.052))
+                                  # "S"=c(0.2, 0.3, 0.4, 0.5),
+                                  # "T1"=c(2.3845, 3.5435, 4.6040, 5.4345), 
+                                  # "T2"=c(2.3779, 3.7292, 4.5620, 5.5350), 
+                                  # "T3"=c(2.3724, 3.5699, 4.6861, 5.4445), 
+                                  # "Ti1"=c(0.350, 0.248, 0.190, 0.168),
+                                  # "Ti2"=c(0.356, 0.249, 0.193, 0.167),
+                                  # "Ti3"=c(0.337, 0.238, 0.193, 0.168))
+#dfDeslocamentoTempo$S <- -dfDeslocamentoTempo$S
 dfDeslocamentoTempo$TM <- rowMeans(dfDeslocamentoTempo[,2:4])
 dfDeslocamentoTempo$TiM <- rowMeans(dfDeslocamentoTempo[,5:7])
 dfDeslocamentoTempo <- dfDeslocamentoTempo[c("S","T1", "T2", "T3", "TM", "Ti1", "Ti2", "Ti3", "TiM")]
@@ -120,7 +129,9 @@ knitr::kable(dfDeslocamentoTempo, digits = 5,
 ```
 
 
-## Cálculo da velocidade instântanea
+A variável *TM* é a média das variáveis *T1*, *T2* e *T3*. De forma análoga, a variável *TiM* é a média das variáveis *Ti1*, *Ti2* e *Ti3*.
+
+## Cálculo da velocidade instantânea
 
 Para o cálculo da velocidade instântanea, utilizamos a seguinte fórmula:
 
@@ -142,10 +153,11 @@ A tabela seguinte mostra o valor da velocidade instantânea:
 
 ```{r echo=F}
 dfVelocidadeTempo <- dfDeslocamentoTempo
+#dfVelocidadeTempo$S <- -dfVelocidadeTempo$S
 dfVelocidadeTempo$Vi <- (2*rv) / dfVelocidadeTempo$TiM
-knitr::kable(dfVelocidadeTempo, digits = 5, 
+knitr::kable(dfVelocidadeTempo[c("TiM", "S", "Vi")], digits = 5, 
              caption = 'Velocidade instantanea', 
-             col.names=c("$\\Delta{s}$ (m)", "T1 (s)", "T2 (s)", "T3 (s)", "TM (s)", "Ti1 (s)", "Ti2 (s)", "Ti3 (s)", "TiM (s)", "Vi (m/s)"))
+             col.names=c("TiM (s)", "$\\Delta{s}$ (m)", "Vi (m/s)"))
 ```
 
 
@@ -154,7 +166,7 @@ knitr::kable(dfVelocidadeTempo, digits = 5,
 O próximo gráfico mostra o relacionamento do deslocamento ($\Delta{s}$) e o tempo instantâneo médio ($T{iM}$) mostrados na tabela anterior.
 
 ```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
-fitDeslocamentoTempo <- lm(S ~ TiM + I(TiM^2), data = dfDeslocamentoTempo)
+fitDeslocamentoTempo <- lm(S ~ TiM +I(TiM^2), data = dfDeslocamentoTempo)
 dfPredDeslocamento <- data.frame(TiM=seq(min(dfDeslocamentoTempo$TiM), 
                                          max(dfDeslocamentoTempo$TiM), 
                                          length.out = 100))
@@ -173,15 +185,10 @@ ggplot(data=dfPredDeslocamento, aes(x=TiM, y=pred)) +
 Utilizando regressão linear, obtemos a seguinte função para estimar o espaço em função do tempo:
 
 \begin{align}\label{eq:estimativaDeslocamento}
-s = `r sprintf("%.5f",coef(fitDeslocamentoTempo)[3])` * T_{iM}^2 `r sprintf("%+.5f",coef(fitDeslocamentoTempo)[2])` * T_{iM} `r sprintf("%+.5f",coef(fitDeslocamentoTempo)[1])`
+s(TiM) = `r sprintf("%.5f",coef(fitDeslocamentoTempo)[3])` * T_{iM}^2 `r sprintf("%+.5f",coef(fitDeslocamentoTempo)[2])` * T_{iM} `r sprintf("%+.5f",coef(fitDeslocamentoTempo)[1])`
 \end{align}
 
 A linha azul do gráfico acima foi generada utilizando esta fórmula. Observe que ela aproximou muito bem os dados do experimento.
-
-\begin{align}\label{eq:deslocamentoTeorico}
-  s(t) = \frac{1}{2}\times\frac{mg}{m+\frac{I_z}{r^2}}t^2
-\end{align}
-
 
 ## Velocidade x Tempo
 
@@ -206,7 +213,7 @@ ggplot(data=dfPredVelocidade, aes(x=TiM, y=pred)) +
 Utilizando regressão linear, obtemos o seguinte função para estimar a velocidade em função do tempo:
 
 \begin{align}\label{eq:estimativaVelocidade}
-v =  `r sprintf("%.5f",coef(fitVelocidadeTempo)[2])` * T_{iM} `r sprintf("%+.5f",coef(fitVelocidadeTempo)[1])`
+v(TiM) =  `r sprintf("%.5f",coef(fitVelocidadeTempo)[2])` * T_{iM} `r sprintf("%+.5f",coef(fitVelocidadeTempo)[1])`
 \end{align}
 
 A linha azul do gráfico acima foi generada utilizando esta fórmula. Observe que ela aproximou muito bem os dados do experimento.
@@ -229,20 +236,37 @@ $g$: é a aceleração da gravidade. Seu valor aproximado é `r aceleracaoGravid
 
 $I_z$: momento de inércia que deseja-se obter;
 
-$r$: raio do cilindro. Seu valor aproximado é `r raioCilindro` m.
+$r$: raio do cilindro. Seu valor aproximado é `r raioEixo` m.
 
 Resolvando esta equação para $I_z$, obtemos o seguinte resultado:
 
 ```{r echo=F}
-Iz1 <- (raioCilindro^2*massaCilindro*aceleracaoGravidade)
-Iz2 <- massaCilindro*raioCilindro^2*coef(fitDeslocamentoTempo)[3]
+Iz1 <- (raioEixo^2*massaCilindro*aceleracaoGravidade)
+Iz2 <- massaCilindro*raioEixo^2*coef(fitDeslocamentoTempo)[3]
 Iz3 <- 2 * coef(fitDeslocamentoTempo)[3]
 Iz <- (Iz1 - Iz2) / Iz3
 ```
 
 \begin{align}\label{eq:momentoInercia2}
-I_z = `r Iz`
+I_z = `r Iz` gm^2
 \end{align}
+
+<!-- ## Comparação das funções horárias teórica X experimental -->
+<!-- Agora que  -->
+<!-- A função horária teórica de deslocamento é -->
+
+<!-- \begin{align}\label{eq:deslocamentoTeorico} -->
+<!--   s(t) = \frac{1}{2}\times\frac{mg}{m+\frac{I_z}{r^2}}t^2 -->
+<!-- \end{align} -->
+
+<!-- Realizando uma comparação gráfica desta função com a função horária obtidade experimentalmente através de regressão linear. -->
+
+<!-- ```{r echo=F} -->
+<!-- #dfDeslocamentoTeorico <-  -->
+<!-- #tempo <-  -->
+
+
+<!-- ``` -->
 
 ## Cálculo das energias potencial, translacional e rotacional
 
@@ -257,7 +281,7 @@ dfEnergiaTempo$Et <- (massaCilindro / 2) *
        coef(fitVelocidadeTempo)[1])^2
 dfEnergiaTempo$Er <- (Iz / 2) * 
       ((coef(fitVelocidadeTempo)[2] * dfEnergiaTempo$TiM +
-       coef(fitVelocidadeTempo)[1]) / raioCilindro )^2
+       coef(fitVelocidadeTempo)[1]) / raioEixo )^2
 dfEnergiaTempo$E <- dfEnergiaTempo$Ep + dfEnergiaTempo$Et + dfEnergiaTempo$Er
 dfEnergiaTempo <- dfEnergiaTempo[c("TiM", "Ep", "Et", "Er", "E")]
 knitr::kable(dfEnergiaTempo, digits = 5, 

@@ -1,0 +1,422 @@
+---
+title: |
+ | UNIVERSIDADE FEDERAL DO AMAZONAS
+ | INSTITUTO DE CIÊNCIAS EXATAS
+ | BACHARELADO EM MATEMÁTICA
+subtitle: | 
+    | LABORATÓRIO DE FÍSICA I
+    | RELATÓRIO V
+author: | 
+    | Fabrício Yuri Costa da Silva - 21454545
+    | Gabriel Bezerra de M. Armelin - 21550325
+    | Jonas Miranda Cascais Júnior - 21553844
+    | Laise Alves Pimentel - 21202395
+    | Mario Alves Pardo Junior - 21553964
+framework: io2012
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    # number_sections: false
+    template: template.latex
+    latex_engine: xelatex
+documentclass: report
+fontsize: 11pt
+geometry: top=3cm, left=2.5cm, right=2.5cm, bottom=2.5cm
+papersize: a4paper
+professor: José Pedro Cordeiro
+city: Manaus
+year: 2016
+bibliography: bibliography.bib
+job: INDT
+mode: selfcontained
+#header-includes: 
+#    - \usepackage{verbatim}
+#    - \usepackage[utf8]{inputenc}
+    # - \usepackage[brazil]{babel}
+    # - \usepackage{indentfirst}  
+    # - \usepackage{mathtools}       
+    # - \usepackage[T1]{fontenc}     
+    # - \usepackage{multicol}
+    # - \usepackage[brazil]{babel}
+    # - \usepackage{bbm}
+    # - \usepackage{commath}
+    # - \usepackage{graphicx, color}
+    # - \setlength{\parskip}{0.3cm}
+    # - \usepackage{tikz}
+nocite: | 
+  @ref1, @ref2, @ref3
+---
+
+
+```{r setup, include=FALSE}
+suppressWarnings(library("knitr"))
+suppressWarnings(library("ggplot2"))
+suppressWarnings(library("grid"))
+suppressWarnings(library("gridExtra"))
+suppressWarnings(library("tikzDevice"))
+opts_chunk$set(dev = 'pdf')
+set.seed(12432) 
+options(digits = 10) 
+
+opts_chunk$set(comment=NA, collapse=T, cache=T, autodep=T,
+               dev="tikz", fig.width=4.5, fig.height=2.75,
+               size ='footnotesize',
+               dev.args=list(pointsize=9),
+               message=F, warning=F, autodep=T)
+options(tikzDefaultEngine="xetex")
+
+
+library(printr)
+```
+
+
+Introdução
+===================
+
+Este relatório descreve e analisa o experimento realizado em sala de aula na disciplina *Laboratório de Física I* do curso de Bacharelado em Matemática.
+
+Procedimento Experimental
+====================
+
+1. Usando o disco de Maxwell desenrolado, fixe o centro do mesmo com o ponto final.
+
+2. Fixe o outro ponto em 200 mm, anote esta distância e obtenha o tempo que o disco percorre a mesma. Repita esta medida 3 vezes e tire uma média.
+
+3. Em seguida para o cálculo da velocidade instantânea, obtenha o tempo de passagem do cilindro vermelho do disco no ponto final. Repita esta medida 3 vezes e tire uma média.
+
+4. Repita este procedimento para as alturas de 300, 400 e 500 mm.
+
+```{r initialData, include=FALSE}
+raioEixo <- 0.0025
+rv <- 0.01035
+massaCilindro <- 436
+aceleracaoGravidade <- 9.8
+```
+
+Análise de Dados
+====================
+
+Esta seção apresenta os dados e cálculos em cada atividade descrita na seção *Parte Experimental*.
+
+## Dados do experimento
+
+
+Esta seção apresenta os dados coletados durante o experimento e os cálculos de médias para esses dados.
+
+```{r echo=F}
+dfDeslocamentoTempo <- data.frame(
+                                  "S"=c(0,0.2, 0.3, 0.4, 0.5, 0.6),
+                                  "T1"=c(0,4.158, 4.969, 5.794, 6.403, 6.949),
+                                  "T2"=c(0,4.156, 4.883, 5.822, 6.436, 6.926),
+                                  "T3"=c(0,4.144, 4.983, 5.828, 6.441, 7.011),
+                                  "Ti1"=c(0,0.080, 0.065, 0.057, 0.055, 0.053),
+                                  "Ti2"=c(0,0.082, 0.065, 0.059, 0.056, 0.054),
+                                  "Ti3"=c(0,0.082, 0.067, 0.057, 0.055, 0.052))
+                                  # "S"=c(0,0.2, 0.3, 0.4, 0.5),
+                                  # "T1"=c(0,2.3845, 3.5435, 4.6040, 5.4345),
+                                  # "T2"=c(0,2.3779, 3.7292, 4.5620, 5.5350),
+                                  # "T3"=c(0,2.3724, 3.5699, 4.6861, 5.4445),
+                                  # "Ti1"=c(0,0.350, 0.248, 0.190, 0.168),
+                                  # "Ti2"=c(0,0.356, 0.249, 0.193, 0.167),
+                                  # "Ti3"=c(0,0.337, 0.238, 0.193, 0.168))
+#dfDeslocamentoTempo$S <- -dfDeslocamentoTempo$S
+dfDeslocamentoTempo$TM <- rowMeans(dfDeslocamentoTempo[,2:4])
+dfDeslocamentoTempo$TiM <- rowMeans(dfDeslocamentoTempo[,5:7])
+dfDeslocamentoTempo <- dfDeslocamentoTempo[c("S","T1", "T2", "T3", "TM", "Ti1", "Ti2", "Ti3", "TiM")]
+knitr::kable(dfDeslocamentoTempo, digits = 5, 
+             caption = 'Dados coletados do experimento. Deslocamento em metro e tempo em segundo.', 
+             col.names=c("$\\Delta{s}$  (m)", "T1 (s)", "T2 (s)", "T3 (s)", "TM (s)", "Ti1 (s)", "Ti2 (s)", "Ti3 (s)", "TiM (s)"))
+```
+
+
+A variável *TM* é a média das variáveis *T1*, *T2* e *T3*. De forma análoga, a variável *TiM* é a média das variáveis *Ti1*, *Ti2* e *Ti3*.
+
+## Cálculo da velocidade instantânea
+
+Para o cálculo da velocidade instântanea, utilizamos a seguinte fórmula:
+
+\begin{align}\label{eq:aceleracao}
+v \approx  \frac{2r_{v}}{T_{iM}} 
+\end{align}
+
+Onde:
+
+v: é a velocidade instântanea que desejamos obter;
+
+2*$r_v$: espaço $\Delta{S}$ que fica na escuridão. $r_v$ é o raio do cilindro que mede `r rv*1000` mm.
+
+$T_{iM}$: tempo instântaneo médio que foi calculado e apresentado na seção anterior.
+
+
+A tabela seguinte mostra o valor da velocidade instantânea:
+
+
+```{r echo=F}
+dfVelocidadeTempo <- dfDeslocamentoTempo
+dfVelocidadeTempo$Vi <- (2*rv) / dfVelocidadeTempo$TiM
+dfVelocidadeTempo[1,] <- 0
+knitr::kable(dfVelocidadeTempo[c("TM", "S", "Vi")], digits = 5, 
+             caption = 'Velocidade instantanea', 
+             col.names=c("TM (s)", "$\\Delta{s}$ (m)", "Vi (m/s)"))
+```
+
+
+## Espaço x Tempo
+
+O próximo gráfico mostra o relacionamento do deslocamento ($\Delta{s}$) e o tempo instantâneo médio ($T{iM}$) mostrados na tabela anterior.
+
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+fitDeslocamentoTempo <- lm(S ~ I(TM^2) + 0, data = dfDeslocamentoTempo)
+dfPredDeslocamento <- data.frame(TM=seq(min(dfDeslocamentoTempo$TM), 
+                                         max(dfDeslocamentoTempo$TM), 
+                                         length.out = 100))
+dfPredDeslocamento$pred <- predict(fitDeslocamentoTempo, newdata = dfPredDeslocamento)
+coeficienteDeslocamento <- coef(fitDeslocamentoTempo)[1]
+ggplot(data=dfPredDeslocamento, aes(x=TM, y=pred)) +
+       # scale_y_log10() +
+       # scale_x_log10() +
+       geom_line(colour = "blue") + 
+       geom_point(data = dfDeslocamentoTempo, aes(x = TM, y=S)) +
+       xlab("Tempo (s)") + ylab("Deslocamento (m)") +
+       ggtitle("Deslocamento x Tempo")
+       #theme(axis.text=element_text(size=9), axis.title=element_text(size=10))
+```
+
+
+Utilizando regressão linear, obtemos a seguinte função para estimar o espaço em função do tempo:
+
+\begin{align}\label{eq:estimativaDeslocamento}
+s(TM) = `r sprintf("%.5f",coeficienteDeslocamento)` * TM^2
+\end{align}
+
+A linha azul do gráfico acima foi gerada utilizando esta fórmula. Observe que ela aproximou muito bem os dados do experimento. Os outros coeficientes dos monômios de grau 0 e 1 foram removidos pois seus valores são praticamente 0. 
+
+## Velocidade x Tempo
+
+O próximo gráfico mostra o relacionamento da velocidade ($V_i$) e o tempo médio ($TM$) mostrados na tabela anterior.
+
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+fitVelocidadeTempo <- lm(Vi ~ TM + 0, data = dfVelocidadeTempo)
+dfPredVelocidade <- data.frame(TM=seq(min(dfVelocidadeTempo$TM), 
+                                       max(dfVelocidadeTempo$TM), 
+                                       length.out = 100))
+dfPredVelocidade$pred <- predict(fitVelocidadeTempo, newdata = dfPredVelocidade)
+ggplot(data=dfPredVelocidade, aes(x=TM, y=pred)) +
+       #scale_y_log10() +
+       #scale_x_log10() +
+       geom_line(colour = "blue") + 
+       geom_point(data = dfVelocidadeTempo, aes(x = TM, y=Vi)) +
+       xlab("Tempo (s)") + ylab("Velocidade (m/s)") +
+       ggtitle("Velocidade x Tempo")
+       #theme(axis.text=element_text(size=9), axis.title=element_text(size=10))
+```
+
+Utilizando regressão linear, obtemos o seguinte função para estimar a velocidade em função do tempo:
+
+\begin{align}\label{eq:estimativaVelocidade}
+v(TM) =  `r sprintf("%.5f",coef(fitVelocidadeTempo)[1])` * TM
+\end{align}
+
+A linha azul do gráfico acima foi gerada utilizando esta fórmula. Observe que ela aproximou muito bem os dados do experimento. O coeficiente do monômio de grau 0 foi removido pois seu valor é praticamente zero.
+
+## Estimativa do momento de inércia
+
+Esta seção explica o cálculo realizado para estimar o momento de inércia do disco ao redor de seu eixo de rotação.
+
+A função horária de deslocamento *teórica* é:
+
+\begin{align}\label{eq:deslocamentoTeorico}
+  s(t) = \frac{1}{2}\times\frac{mg}{m+\frac{I_z}{r^2}}t^2
+\end{align}
+
+
+Podemos calcular o momento de inércia $I_z$ igualando o coeficiente desta equação com o coeficiente da equação \ref{eq:estimativaDeslocamento} estimado anteriormente, resultando na seguinte equação:
+
+\begin{align}\label{eq:momentoInercia1}
+`r sprintf("%.5f",coeficienteDeslocamento)` = \frac{1}{2} \times \frac{mg}{m+\frac{I_z}{r^2}}
+\end{align}
+
+Onde:
+
+$m$: é a massa do cilindro. Seu valor aproximado é `r massaCilindro` g;
+
+$g$: é a aceleração da gravidade. Seu valor aproximado é `r aceleracaoGravidade` $m/s^2$;
+
+$I_z$: momento de inércia que deseja-se obter;
+
+$r$: raio do eixo. Seu valor aproximado é `r raioEixo` m.
+
+Resolvando esta equação para $I_z$, obtemos o seguinte resultado:
+
+```{r echo=F}
+Iz1 <- (raioEixo^2)*massaCilindro*aceleracaoGravidade
+Iz2 <- massaCilindro*(raioEixo^2)*2*coeficienteDeslocamento
+Iz3 <- 2 * coeficienteDeslocamento
+Iz <- (Iz1 - Iz2) / Iz3
+```
+
+\begin{align}\label{eq:momentoInercia2}
+I_z = `r Iz`  \quad g.m^2
+\end{align}
+
+
+## Energia potencial gravitacional
+
+
+Esta seção apresenta o cálculo realizado para obter o valor da energia potencial gravitacional e seu gráfico com relação ao tempo.
+
+Utilizamos a seguinte fórmula para calcular a energia potencial:
+
+\begin{align}\label{eq:energiaPotencial}
+Ep(t) = m\times g \times s(t)
+\end{align}
+
+Onde:
+
+$Ep$: é a energia potencial que deseja-se obter;
+
+$m$: é massa da roda;
+
+$g$: é a aceleracao da gravidade;
+
+$h$: é a altura do cilindro;
+
+A seguinte tabela apresenta os valores obtidos:
+
+```{r echo=F}
+dfEnergiaTempo <- dfVelocidadeTempo
+dfEnergiaTempo <- dfEnergiaTempo[2:nrow(dfEnergiaTempo),]
+predDeslocamento <- predict(fitDeslocamentoTempo, newdata=data.frame(TM=dfEnergiaTempo$TiM))
+dfEnergiaTempo$Ep <- -1*(massaCilindro/1000) * aceleracaoGravidade * predDeslocamento
+knitr::kable(dfEnergiaTempo[c("TM", "Ep")],
+             caption = 'Energia potencial gravitacional', 
+             col.names=c("TM", "Ep"))
+```
+
+O gráfico seguinte apresenta o comportamento da energia potencial ao longo do tempo:
+
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfEnergiaTempo, aes(x=TM, y=Ep)) +
+       # scale_y_log10() +
+       # scale_x_log10() +
+
+       stat_smooth(method = "lm", formula= y ~ x + I(x^2), se=F) +     
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Energia potencial (J)") +
+       ggtitle("Energia potencial x Tempo")
+```
+
+
+## Energia cinética de translação
+
+Esta seção apresenta o cálculo realizado para obter o valor da energia cinética de translação e seu gráfico com relação ao tempo.
+
+Utilizamos a seguinte fórmula para calcular a cinética de translação:
+
+\begin{align}\label{eq:energiaTranslação}
+E_t(t) = \frac{m\times v(t)^2}{2}
+\end{align}
+
+Onde:
+
+$E_t$: é a energia cinética de translação que deseja-se obter;
+
+$m$: é massa da roda;
+
+$v(t)$: velocidade no instante t;
+
+A seguinte tabela apresenta os valores obtidos: 
+
+```{r echo=F}
+predVelocidade <- predict(fitVelocidadeTempo, newdata=data.frame(TM=dfEnergiaTempo$TiM))
+dfEnergiaTempo$Et <- ((massaCilindro/1000) * (predVelocidade^2))/2
+knitr::kable(dfEnergiaTempo[c("TM", "Et")], 
+             caption = 'Energia potencial gravitacional', 
+             col.names=c("TM", "Et"))
+```
+
+O gráfico seguinte apresenta o comportamento da energia cinética de translação ao longo do tempo:
+
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfEnergiaTempo, aes(x=TM, y=Et)) +
+       # scale_y_log10() +
+       # scale_x_log10() +
+
+       stat_smooth(method = "lm", formula= y ~ x + I(x^2), se=F) +     
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Energia de translação(J)") +
+       ggtitle("Energia translação x Tempo")
+```
+
+## Energia cinética de rotação
+
+
+Esta seção apresenta o cálculo realizado para obter o valor da energia cinética de rotação e seu gráfico com relação ao tempo.
+
+Utilizamos a seguinte fórmula para calcular a cinética de rotação:
+
+\begin{align}\label{eq:energiaTranslação}
+E_r(t) = \frac{I \times \omega{(t)}^2}{2} = \frac{I \times v(t)^2}{2 \times r^2}
+\end{align}
+
+Onde:
+
+$E_r$: é a energia cinética de rotação que deseja-se obter;
+
+$m$: é massa da roda;
+
+$v(t)$: velocidade no instante t;
+
+$r$: raio do eixo. Seu valor aproximado é `r raioEixo` m.
+
+A seguinte tabela apresenta os valores obtidos:
+
+```{r echo=F}
+dfEnergiaTempo$Er <- ( (Iz/1000) * (predVelocidade^2))/(2*(raioEixo^2))
+knitr::kable(dfEnergiaTempo[c("TM", "Er")],
+             caption = 'Energia potencial gravitacional', 
+             col.names=c("TM", "Er"))
+```
+
+O gráfico seguinte apresenta o comportamento da energia cinética de rotação ao longo do tempo:
+
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfEnergiaTempo, aes(x=TM, y=Er)) +
+       # scale_y_log10() +
+       # scale_x_log10() +
+
+       stat_smooth(method = "lm", formula= y ~ x + I(x^2), se=F) +     
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Energia de rotação(J)") +
+       ggtitle("Energia de rotação x Tempo")
+```
+
+
+## Energia mecânica
+
+```{r echo=F}
+dfEnergiaTempo$E <- dfEnergiaTempo$Ep + dfEnergiaTempo$Et + dfEnergiaTempo$Er
+knitr::kable(dfEnergiaTempo[c("TM", "Ep", "Et", "Er", "E")],
+             caption = 'Energias', 
+             col.names=c("TM", "Ep", "Et", "Er", "E"))
+```
+
+```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
+ggplot(data=dfEnergiaTempo, aes(x=TM, y=E)) +
+       # scale_y_log10() +
+       # scale_x_log10() +
+
+       stat_smooth(method = "lm", formula= y ~ x , se=F) +     
+       geom_point() +
+       xlab("Tempo (s)") + ylab("Energia mecânica (J)") +
+       ggtitle("Energia x Tempo")
+```
+
+
+Conclusão
+====================
+
+
+Referências
+====================
