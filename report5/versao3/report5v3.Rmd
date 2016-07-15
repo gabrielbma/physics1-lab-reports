@@ -393,29 +393,19 @@ ggplot(data=dfEnergiaTempo, aes(x=TM, y=Er)) +
 ```
 
 
-## Energia mecânica
+Conclusão
+====================
+
+De acordo com os resultados apresentados nas seções "Energia potencial gravitacional", "Energia cinética translacional" e "Energia cinética rotacional", podemos concluir que há uma transferência de energia potencia para energia cinética translacional e rotacinal à  medida que o tempo passa. Portanto, as energia são conservativas e o teorema de conservação de energia se manteve durante o experimento. Podemos ainda mostrar aproximar a energia mecânica, conforma a tabela abaixo:
 
 ```{r echo=F}
-dfEnergiaTempo$E <- dfEnergiaTempo$Ep + dfEnergiaTempo$Et + dfEnergiaTempo$Er
+dfEnergiaTempo$E <- round(dfEnergiaTempo$Ep + dfEnergiaTempo$Et + dfEnergiaTempo$Er,3)
 knitr::kable(dfEnergiaTempo[c("TM", "Ep", "Et", "Er", "E")],
              caption = 'Energias', 
              col.names=c("TM", "Ep", "Et", "Er", "E"))
 ```
 
-```{r echo=F, fig.height=2, fig.width=4, fig.align="center"}
-ggplot(data=dfEnergiaTempo, aes(x=TM, y=E)) +
-       # scale_y_log10() +
-       # scale_x_log10() +
-
-       stat_smooth(method = "lm", formula= y ~ x , se=F) +     
-       geom_point() +
-       xlab("Tempo (s)") + ylab("Energia mecânica (J)") +
-       ggtitle("Energia x Tempo")
-```
-
-
-Conclusão
-====================
+Para uma precisão de 3 casas decimais, podemos considerar o valor da energia mecânica como *0,001* J. Há um ponto onde esse valor deu diferente de 0,001, consideremos que isso ocorreu devido a erros de medição. A tabela também mostra que a energia potencial se transforma mais em energia de rotação que em energia de translação.
 
 
 Referências
