@@ -312,7 +312,7 @@ ggplot(data=dfEnergiaTempo, aes(x=TM, y=Ep)) +
 
 Esta seção apresenta o cálculo realizado para obter o valor da energia cinética de translação e seu gráfico com relação ao tempo.
 
-Utilizamos a seguinte fórmula para calcular a cinética de translação:
+Utilizamos a seguinte fórmula para calcular a energia cinética de translação:
 
 \begin{align}\label{eq:energiaTranslação}
 E_t(t) = \frac{m\times v(t)^2}{2}
@@ -354,7 +354,7 @@ ggplot(data=dfEnergiaTempo, aes(x=TM, y=Et)) +
 
 Esta seção apresenta o cálculo realizado para obter o valor da energia cinética de rotação e seu gráfico com relação ao tempo.
 
-Utilizamos a seguinte fórmula para calcular a cinética de rotação:
+Utilizamos a seguinte fórmula para calcular a energia cinética de rotação:
 
 \begin{align}\label{eq:energiaTranslação}
 E_r(t) = \frac{I \times \omega{(t)}^2}{2} = \frac{I \times v(t)^2}{2 \times r^2}
@@ -405,7 +405,7 @@ knitr::kable(dfEnergiaTempo[c("TM", "Ep", "Et", "Er", "E")],
              col.names=c("TM", "Ep", "Et", "Er", "E"))
 ```
 
-Para uma precisão de 3 casas decimais, podemos considerar o valor da energia mecânica como *0,001* J. Há um ponto onde esse valor deu diferente de 0,001, consideremos que isso ocorreu devido a erros de medição. A tabela também mostra que a energia potencial se transforma mais em energia de rotação que em energia de translação.
+Para uma precisão de 3 casas decimais, podemos considerar o valor da energia mecânica como *0,001* J. Há um ponto onde esse valor deu diferente de 0,001, consideramos que isso ocorreu devido a erros de medição. A tabela também mostra que a energia potencial se transforma mais em energia de rotação que em energia de translação.
 
 
 Referências
