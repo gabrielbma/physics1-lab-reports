@@ -1,0 +1,154 @@
+---
+title: |
+ | UNIVERSIDADE FEDERAL DO AMAZONAS
+ | INSTITUTO DE CIÊNCIAS EXATAS
+ | BACHARELADO EM MATEMÁTICA
+subtitle: | 
+    | LABORATÓRIO DE FÍSICA I
+    | RELATÓRIO V
+author: | 
+    | Fabrício Yuri Costa da Silva - 21454545
+    | Gabriel Bezerra de M. Armelin - 21550325
+    | Jonas Miranda Cascais Júnior - 21553844
+    | Laise Alves Pimentel - 21202395
+    | Mario Alves Pardo Junior - 21553964
+framework: io2012
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    # number_sections: false
+    template: template.latex
+    latex_engine: xelatex
+documentclass: report
+fontsize: 11pt
+geometry: top=3cm, left=2.5cm, right=2.5cm, bottom=2.5cm
+papersize: a4paper
+professor: José Pedro Cordeiro
+city: Manaus
+year: 2016
+bibliography: bibliography.bib
+job: INDT
+mode: selfcontained
+#header-includes: 
+#    - \usepackage{verbatim}
+#    - \usepackage[utf8]{inputenc}
+    # - \usepackage[brazil]{babel}
+    # - \usepackage{indentfirst}  
+    # - \usepackage{mathtools}       
+    # - \usepackage[T1]{fontenc}     
+    # - \usepackage{multicol}
+    # - \usepackage[brazil]{babel}
+    # - \usepackage{bbm}
+    # - \usepackage{commath}
+    # - \usepackage{graphicx, color}
+    # - \setlength{\parskip}{0.3cm}
+    # - \usepackage{tikz}
+nocite: | 
+  @ref1, @ref2, @ref3
+---
+
+
+```{r setup, include=FALSE}
+suppressWarnings(library("knitr"))
+suppressWarnings(library("ggplot2"))
+suppressWarnings(library("grid"))
+suppressWarnings(library("gridExtra"))
+suppressWarnings(library("tikzDevice"))
+suppressWarnings(library("xtable"))
+opts_chunk$set(dev = 'pdf')
+set.seed(12432) 
+options(digits = 10) 
+
+opts_chunk$set(comment=NA, collapse=T, cache=T, autodep=T,
+               dev="tikz", fig.width=4.5, fig.height=2.75,
+               size ='footnotesize',
+               dev.args=list(pointsize=9),
+               message=F, warning=F, autodep=T)
+options(tikzDefaultEngine="xetex")
+
+
+library(printr)
+```
+
+
+Introdução
+===================
+
+Este relatório descreve e analisa o experimento realizado em sala de aula na disciplina *Laboratório de Física I* do curso de Bacharelado em Matemática.
+
+Procedimento Experimental
+====================
+
+
+
+```{r initialData, include=FALSE}
+massaPlanador1 <- 210.3
+massaPlanador2 <- 190.7
+massaPlanador2_100 <- massaPlanador2 + 100
+massaPlanador2_120 <- massaPlanador2 + 120
+massaPlanador2_140 <- massaPlanador2 + 140
+```
+
+Análise de Dados
+====================
+
+Esta seção apresenta os dados e cálculos em cada atividade descrita na seção *Parte Experimental*.
+
+## Dados do experimento de colisão elástica
+
+
+Esta seção apresenta os dados coletados durante o experimento de colisão elástica. A massa do planador 1 é de `r massaPlanador1` e do planador 2 é `r massaPlanador2`. A tabela seguinte apresenta os dados que coletamos para o experimento de colisão elástica:
+
+```{r echo=F, results="asis"}
+dfColisaoElastica <- data.frame(  
+                                  "P1T1.100"=c(0.178, 0.170, 0.171),
+                                  "P1T2.100"=c(1.863, 1.441, 1.633),
+                                  "P2T1.100"=c(0.218, 0.208, 0.207),
+                                  "P1T1.120"=c(0.182, 0.169, 0.172),
+                                  "P1T2.120"=c(1.204, 0.969, 1.416),
+                                  "P2T1.120"=c(0.231, 0.216, 0.216),
+                                  "P1T1.140"=c(0.175, 0.171, 0.172),
+                                  "P1T2.140"=c(1.039, 0.862, 1.100),
+                                  "P2T1.140"=c(0.231, 0.276, 0.225)
+                                  )
+dfColisaoElastica <- rbind(dfColisaoElastica,colMeans(dfColisaoElastica))
+rownames(dfColisaoElastica) <- c("Amostra 1", "Amostra 2", "Amostra 3", "Média")
+print(xtable(
+    dfColisaoElastica
+    ,caption='Tempos dos planadores para os diferentes pesos do planador 2 em segundos.'
+    ,align=c('cccccccccc')
+    ,digits=c(3)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.8'
+)
+```
+
+
+Onde:
+
+A letra *P* significa planador *P1* e *P2* são as planadores 1 e 2 respectivamente. A letra *T* significa tempo. *T1*, *T2* são os tempos antes e após a colisão respectivamente. Os número após o *ponto* significam as massas adicionadas na planadores 2 em gramas. Portanto, a lista abaixo explica em detalhes o significado das variáveis:
+
+P1T1.100, P1T1.120 e P1T1.140: representam os tempos antes da colisão em segundos do planador 1 para as massas de 100g, 120g e 140g adicionadas na planadores 2;
+
+P1T2.100, P1T2.120 e P1T2.140: representam os tempos depois da colisão em segundos do planador 1 para as massas de 100g, 120g e 140g adicionadas na planador 2;
+
+P2T1.100, P2T1.120 e P2T1.140: representam os tempos antes da colisão em segundos do planador 2 para as massas de 100g, 120g e 140g adicionadas na planador 2;
+
+
+Conclusão
+====================
+
+
+
+Referências
+====================
