@@ -17,6 +17,10 @@ output:
   pdf_document:
     toc: true
     toc_depth: 3
+    pandoc_args: [
+      "--number-sections",
+      "--number-offset=1"
+    ]
     # number_sections: false
     template: template.latex
     latex_engine: xelatex
@@ -58,9 +62,11 @@ suppressWarnings(library("tikzDevice"))
 suppressWarnings(library("xtable"))
 opts_chunk$set(dev = 'pdf')
 set.seed(12432) 
-options(digits = 10) 
 
-opts_chunk$set(comment=NA, collapse=T, cache=T, autodep=T,
+decimalDigits <- 4
+options(digits = decimalDigits) 
+
+opts_chunk$set(comment=NA, collapse=T, cache=F, autodep=T,
                dev="tikz", fig.width=4.5, fig.height=2.75,
                size ='footnotesize',
                dev.args=list(pointsize=9),
@@ -83,11 +89,13 @@ Procedimento Experimental
 
 
 ```{r initialData, include=FALSE}
-massaPlanador1 <- 210.3
-massaPlanador2 <- 190.7
-massaPlanador2_100 <- massaPlanador2 + 100
-massaPlanador2_120 <- massaPlanador2 + 120
-massaPlanador2_140 <- massaPlanador2 + 140
+massaPlanador1 <- 0.2103
+massaPlanador2 <- 0.1937
+massaPlanador2_100 <- massaPlanador2 + 0.100
+massaPlanador2_120 <- massaPlanador2 + 0.120
+massaPlanador2_140 <- massaPlanador2 + 0.140
+massaPlanador2_20 <- massaPlanador2 + 0.020
+massaPlanador2_40 <- massaPlanador2 + 0.040
 ```
 
 Análise de Dados
@@ -95,30 +103,33 @@ Análise de Dados
 
 Esta seção apresenta os dados e cálculos em cada atividade descrita na seção *Parte Experimental*.
 
-## Dados do experimento de colisão elástica
+## Experimento de colisão elástica
 
+Esta seção apresenta os dados coletados, os cálculos de velocidades, os cálculo dos momentos linerares e os cálculos de enérgia cinética dos planadores antes e depois da colisão do experimento de colisão elástica.
 
-Esta seção apresenta os dados coletados durante o experimento de colisão elástica. A massa do planador 1 é de `r massaPlanador1` e do planador 2 é `r massaPlanador2`. A tabela seguinte apresenta os dados que coletamos para o experimento de colisão elástica:
+### Dados do experimento
+
+Esta seção apresenta os dados coletados durante o experimento de colisão elástica. A massa do planador 1 é de *`r massaPlanador1`kg* e do planador 2 é *`r massaPlanador2`kg*. A tabela seguinte apresenta os dados coletados:
 
 ```{r echo=F, results="asis"}
-dfColisaoElastica <- data.frame(  
+dfColisaoElasticaTemp <- data.frame(  
                                   "P1T1.100"=c(0.178, 0.170, 0.171),
                                   "P1T2.100"=c(1.863, 1.441, 1.633),
-                                  "P2T1.100"=c(0.218, 0.208, 0.207),
+                                  "P2T2.100"=c(0.218, 0.208, 0.207),
                                   "P1T1.120"=c(0.182, 0.169, 0.172),
                                   "P1T2.120"=c(1.204, 0.969, 1.416),
-                                  "P2T1.120"=c(0.231, 0.216, 0.216),
+                                  "P2T2.120"=c(0.231, 0.216, 0.216),
                                   "P1T1.140"=c(0.175, 0.171, 0.172),
                                   "P1T2.140"=c(1.039, 0.862, 1.100),
-                                  "P2T1.140"=c(0.231, 0.276, 0.225)
+                                  "P2T2.140"=c(0.231, 0.276, 0.225)
                                   )
-dfColisaoElastica <- rbind(dfColisaoElastica,colMeans(dfColisaoElastica))
-rownames(dfColisaoElastica) <- c("Amostra 1", "Amostra 2", "Amostra 3", "Média")
+dfColisaoElasticaTemp <- rbind(dfColisaoElasticaTemp,colMeans(dfColisaoElasticaTemp))
+rownames(dfColisaoElasticaTemp) <- c("Amostra 1", "Amostra 2", "Amostra 3", "Média")
 print(xtable(
-    dfColisaoElastica
-    ,caption='Tempos dos planadores para os diferentes pesos do planador 2 em segundos.'
+    dfColisaoElasticaTemp
+    ,caption='Tempos em segundos dos planadores para as diferentes massas adicionados ao planador 2.'
     ,align=c('cccccccccc')
-    ,digits=c(3)
+    ,digits=c(decimalDigits)
     )
     ,type='latex'
     ,caption.placement='top'
@@ -138,11 +149,596 @@ Onde:
 
 A letra *P* significa planador *P1* e *P2* são as planadores 1 e 2 respectivamente. A letra *T* significa tempo. *T1*, *T2* são os tempos antes e após a colisão respectivamente. Os número após o *ponto* significam as massas adicionadas na planadores 2 em gramas. Portanto, a lista abaixo explica em detalhes o significado das variáveis:
 
-P1T1.100, P1T1.120 e P1T1.140: representam os tempos antes da colisão em segundos do planador 1 para as massas de 100g, 120g e 140g adicionadas na planadores 2;
+P1T1.100, P1T1.120 e P1T1.140: representam os tempos antes da colisão em segundos do planador 1 para as massas de 0.100 kg, 0.120 kg e 0.140kg adicionadas na planadores 2;
 
-P1T2.100, P1T2.120 e P1T2.140: representam os tempos depois da colisão em segundos do planador 1 para as massas de 100g, 120g e 140g adicionadas na planador 2;
+P1T2.100, P1T2.120 e P1T2.140: representam os tempos depois da colisão em segundos do planador 1 para as massas de 0.100 kg, 0.120 kg e 0.140kg adicionadas na planador 2;
 
-P2T1.100, P2T1.120 e P2T1.140: representam os tempos antes da colisão em segundos do planador 2 para as massas de 100g, 120g e 140g adicionadas na planador 2;
+P2T2.100, P2T2.120 e P2T2.140: representam os tempos depois da colisão em segundos do planador 2 para as massas de 0.100 kg, 0.120 kg e 0.140kg adicionadas na planador 2;
+
+Consolidando os tempos médios (última linha da tabela acima) com as massas dos planadores, pode-se montar a seguinte tabela:
+
+
+```{r echo=F, results="asis"}
+dfColisaoElastica <- data.frame(
+                                    "Dados1.Planador1"=c(massaPlanador1, dfColisaoElasticaTemp$P1T1.100[4], dfColisaoElasticaTemp$P1T2.100[4])
+                                    ,"Dados1.Planador2"=c(massaPlanador2_100, 0, dfColisaoElasticaTemp$P2T2.100[4])
+                                    ,"Dados2.Planador1"=c(massaPlanador1, dfColisaoElasticaTemp$P1T1.120[4], dfColisaoElasticaTemp$P1T2.120[4])
+                                    ,"Dados2.Planador2"=c(massaPlanador2_120, 0, dfColisaoElasticaTemp$P2T2.120[4])
+                                    ,"Dados3.Planador1"=c(massaPlanador1, dfColisaoElasticaTemp$P1T1.140[4], dfColisaoElasticaTemp$P1T2.140[4]),
+                                    "Dados3.Planador2"=c(massaPlanador2_140, 0, dfColisaoElasticaTemp$P2T2.140[4])
+                                  )
+variablesNames <- c("massa dos planadores (kg)", "tempo antes da colisão (s)", "tempo depois da colisão (s)")
+rownames(dfColisaoElastica) <- variablesNames
+print(xtable(
+    dfColisaoElastica
+    ,caption='Experimento elástico.'
+    ,align=c('lcccccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.7'
+)
+```
+
+
+Neste experimento, os tempos depois da colisão para o planador 2 não precisaram que fossem coletados e, portanto, eles estão apresentados com o valor 0.
+
+### Cálculo das velocidades
+
+Esta seção apresenta o procedimento realizado para o cálculo das velocidades dos planadores.
+
+Para o cálculo da velocidade antes e após a colisão do planador 1 e 2, utilizamos a sequinte fórmula:
+
+\begin{align}\label{eq:velocidade}
+v = \frac{\Delta{x}}{\Delta{t}}
+\end{align}
+
+Onde: 
+
+$\Delta{x}$: é o deslocamento de 0.1m referente ao comprimento dos anteparos que foram posicionados nos planadores.
+
+$\Delta{t}$: é o intervalo de tempo para percorrer o anteparo que foi posicionado no planador.
+
+```{r echo=F, results="asis"}
+velocidadeAntesColisao = c(0.1/dfColisaoElastica$Dados1.Planador1[2], 0, 
+                           0.1/dfColisaoElastica$Dados2.Planador1[2], 0,
+                           0.1/dfColisaoElastica$Dados3.Planador1[2], 0)
+velocidadeDepoisColisao = c(0.1 / dfColisaoElastica$Dados1.Planador1[3], 0.1 / dfColisaoElastica$Dados1.Planador2[3],
+                          0.1 / dfColisaoElastica$Dados2.Planador1[3], 0.1 / dfColisaoElastica$Dados2.Planador2[3],
+                          0.1 / dfColisaoElastica$Dados3.Planador1[3], 0.1 / dfColisaoElastica$Dados3.Planador2[3])
+dfColisaoElastica <- rbind(dfColisaoElastica, velocidadeAntesColisao)
+dfColisaoElastica <- rbind(dfColisaoElastica, velocidadeDepoisColisao)
+variablesNames <- c(variablesNames, "velocidade antes da colisão (m/s)", "velocidade depois da colisão (m/s)")
+rownames(dfColisaoElastica) <- variablesNames
+
+print(xtable(
+    dfColisaoElastica
+    ,caption='Experimento elástico.'
+    ,align=c('lcccccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.65'
+)
+```
+
+### Cálculo dos momentos lineares
+
+Esta seção apresenta o procedimento realizado para o cálculo dos momentos lineares dos planadores.
+
+Foi utilizada a fórmula abaixo para a realização do cálculo dos momentos lineares antes e depois da colisão dos planadores 1 e 2.
+
+\begin{align}\label{eq:momentoLinear}
+\vec{p} = m \times \vec{v}
+\end{align}
+
+Onde:
+
+$\vec{p}$: é o momento linear que deseja-se calcular;
+
+$m$: é a massa do planador 1 ou do planador 2;
+
+$\vec{v}$: é a velocidade do planador 1 ou 2 e antes ou depois da colisão;
+
+Os resultados obtidos estão apresentados na tabela abaixo:
+
+```{r echo=F, results="asis"}
+momentoLinearAntesColisao = c(dfColisaoElastica$Dados1.Planador1[1]*dfColisaoElastica$Dados1.Planador1[4],
+                              dfColisaoElastica$Dados1.Planador2[1]*dfColisaoElastica$Dados1.Planador2[4],
+                              dfColisaoElastica$Dados2.Planador1[1]*dfColisaoElastica$Dados2.Planador1[4],
+                              dfColisaoElastica$Dados2.Planador2[1]*dfColisaoElastica$Dados2.Planador2[4],
+                              dfColisaoElastica$Dados3.Planador1[1]*dfColisaoElastica$Dados3.Planador1[4],
+                              dfColisaoElastica$Dados3.Planador2[1]*dfColisaoElastica$Dados3.Planador2[4])
+momentoLinearDepoisColisao = c(dfColisaoElastica$Dados1.Planador1[1]*dfColisaoElastica$Dados1.Planador1[5],
+                              dfColisaoElastica$Dados1.Planador2[1]*dfColisaoElastica$Dados1.Planador2[5],
+                              dfColisaoElastica$Dados2.Planador1[1]*dfColisaoElastica$Dados2.Planador1[5],
+                              dfColisaoElastica$Dados2.Planador2[1]*dfColisaoElastica$Dados2.Planador2[5],
+                              dfColisaoElastica$Dados3.Planador1[1]*dfColisaoElastica$Dados3.Planador1[5],
+                              dfColisaoElastica$Dados3.Planador2[1]*dfColisaoElastica$Dados3.Planador2[5])
+
+dfColisaoElastica <- rbind(dfColisaoElastica, momentoLinearAntesColisao)
+dfColisaoElastica <- rbind(dfColisaoElastica, momentoLinearDepoisColisao)
+variablesNames <- c(variablesNames, "momento antes da colisão (kg.m/s)", "momento depois da colisão (kg.m/s)")
+rownames(dfColisaoElastica) <- variablesNames
+
+print(xtable(
+    dfColisaoElastica
+    ,caption='Experimento elástico.'
+    ,align=c('lcccccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.65'
+)
+```
+
+
+### Cálculo das energias cinéticas
+
+Esta seção apresenta o procedimento realizado para o cálculo energias cinéticas dos planadores.
+
+Foi utilizada a fórmula abaixo para a realização do cálculo das energias cinéticas antes e depos da colisão dos planadores 1 e 2.
+
+\begin{align}\label{eq:energiaCinética}
+E_{cin} = \frac{1}{2} \times m \times \vec{v}^2
+\end{align}
+
+Onde:
+
+$E_{cin}$: energia cinética que deseja-se calcular;
+
+$m$: massa do planador 1 ou 2;
+
+$\vec{v}$: velocidade do planador 1 ou 2, e antes ou depois da colisão;
+
+Os resultados obtidos estão apresentados na tabela abaixo:
+
+```{r echo=F, results="asis"}
+energiaCineticaAntesColisao = c(
+                                0.5*dfColisaoElastica$Dados1.Planador1[1]*(dfColisaoElastica$Dados1.Planador1[4]^2),
+                                0.5*dfColisaoElastica$Dados1.Planador2[1]*(dfColisaoElastica$Dados1.Planador2[4]^2),
+                                0.5*dfColisaoElastica$Dados2.Planador1[1]*(dfColisaoElastica$Dados2.Planador1[4]^2),
+                                0.5*dfColisaoElastica$Dados2.Planador2[1]*(dfColisaoElastica$Dados2.Planador2[4]^2),
+                                0.5*dfColisaoElastica$Dados3.Planador1[1]*(dfColisaoElastica$Dados3.Planador1[4]^2),
+                                0.5*dfColisaoElastica$Dados3.Planador2[1]*(dfColisaoElastica$Dados3.Planador2[4]^2))
+energiaCineticaDepoisColisao = c(                                 
+                                0.5*dfColisaoElastica$Dados1.Planador1[1]*(dfColisaoElastica$Dados1.Planador1[5]^2),
+                                0.5*dfColisaoElastica$Dados1.Planador2[1]*(dfColisaoElastica$Dados1.Planador2[5]^2),
+                                0.5*dfColisaoElastica$Dados2.Planador1[1]*(dfColisaoElastica$Dados2.Planador1[5]^2),
+                                0.5*dfColisaoElastica$Dados2.Planador2[1]*(dfColisaoElastica$Dados2.Planador2[5]^2),
+                                0.5*dfColisaoElastica$Dados3.Planador1[1]*(dfColisaoElastica$Dados3.Planador1[5]^2),
+                                0.5*dfColisaoElastica$Dados3.Planador2[1]*(dfColisaoElastica$Dados3.Planador2[5]^2))
+
+dfColisaoElastica <- rbind(dfColisaoElastica, energiaCineticaAntesColisao)
+dfColisaoElastica <- rbind(dfColisaoElastica, energiaCineticaDepoisColisao)
+variablesNames <- c(variablesNames, "energia cinética antes da colisão (J)", "energia cinética depois da colisão (J)")
+rownames(dfColisaoElastica) <- variablesNames
+
+print(xtable(
+    dfColisaoElastica
+    ,caption='Experimento elástico.'
+    ,align=c('lcccccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.65'
+)
+```
+
+
+### Soma dos momentos lineares e energia cinéticas
+
+Esta seção apresenta o procedimento realizado para o cálculo da soma dos momentos lineares e das energias cinéticas para cada planador.
+
+Para os groupos *Dados 1*, *Dados 2* e *Dados 3* foram realizados a soma das energias e momentos lineares antes e depois da colisão. A tabela seguinte apresenta os resultados obtidos:
+
+```{r echo=F, results="asis"}
+dfSomaMomentoLinear <- data.frame("Dados1"=c(dfColisaoElastica$Dados1.Planador1[6]+dfColisaoElastica$Dados1.Planador2[6],
+                                                   dfColisaoElastica$Dados1.Planador1[7]+dfColisaoElastica$Dados1.Planador2[7]),
+                            "Dados2"=c(dfColisaoElastica$Dados2.Planador1[6]+dfColisaoElastica$Dados2.Planador2[6],
+                                                   dfColisaoElastica$Dados2.Planador1[7]+dfColisaoElastica$Dados2.Planador2[7]),
+                            "Dados3"=c(dfColisaoElastica$Dados3.Planador1[6]+dfColisaoElastica$Dados3.Planador2[6],
+                                                   dfColisaoElastica$Dados3.Planador1[7]+dfColisaoElastica$Dados3.Planador2[7]))
+
+variablesNamesMomentoLinear <- c("soma dos momentos antes da colisão (kg.m/s)", "soma dos momentos depois da colisão (kg.m/s)")
+rownames(dfSomaMomentoLinear) <- variablesNamesMomentoLinear
+
+dfSomaEnergia <- data.frame("Dados1"=c(dfColisaoElastica$Dados1.Planador1[8]+dfColisaoElastica$Dados1.Planador2[8],
+                                                   dfColisaoElastica$Dados1.Planador1[9]+dfColisaoElastica$Dados1.Planador2[9]),
+                            "Dados2"=c(dfColisaoElastica$Dados2.Planador1[8]+dfColisaoElastica$Dados2.Planador2[8],
+                                                   dfColisaoElastica$Dados2.Planador1[9]+dfColisaoElastica$Dados2.Planador2[9]),
+                            "Dados3"=c(dfColisaoElastica$Dados3.Planador1[8]+dfColisaoElastica$Dados3.Planador2[8],
+                                                   dfColisaoElastica$Dados3.Planador1[9]+dfColisaoElastica$Dados3.Planador2[9]))
+
+variablesNamesSomaEnergia <- c("soma das energias cinética antes da colisão (J)", "soma das energias cinética depois da colisão (J)")
+rownames(dfSomaEnergia) <- variablesNamesSomaEnergia
+
+dfSoma <- rbind(dfSomaMomentoLinear, dfSomaEnergia)
+
+print(xtable(
+    dfSoma
+    ,caption='Experimento elástico.'
+    ,align=c('lccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.9'
+)
+```
+
+
+### Coeficiente de restituição
+
+Esta seção apresenta o cálculo do coeficiente de restituição.
+
+A fórmula seguinte foi utilizada para obter o valor do coeficiente de restituição.
+
+\begin{align}\label{eq:coeficienteRestituicao}
+e = \frac{\abs{v\prime_a - v\prime_b}}{\abs{v_a - v_b}}
+\end{align}
+
+O valor de *e* obtido foi:
+
+```{r echo=F}
+e <- (dfColisaoElastica$Dados1.Planador2[5] - dfColisaoElastica$Dados1.Planador1[5]) / (dfColisaoElastica$Dados1.Planador1[4] - dfColisaoElastica$Dados1.Planador2[4])
+```
+
+$$`r e`$$
+
+## Experimento de colisão inelástica
+
+Esta seção apresenta os dados coletados, os cálculos de velocidades, os cálculo dos momentos linerares e os cálculos de enérgia cinética dos planadores antes e depois da colisão do experimento de colisão inelástica.
+
+### Dados do experimento
+
+Esta seção apresenta os dados coletados durante o experimento de colisão elástica. A massa do planador 1 é de *`r massaPlanador1`kg* e do planador 2 é *`r massaPlanador2`kg*. A tabela seguinte apresenta os dados coletados:
+
+```{r echo=F, results="asis"}
+dfColisaoInelasticaTemp <- data.frame(
+                                    "Dados1.Planador1"=c(0.170, 0.177, 0.171)
+                                    ,"Dados1.Planador2"=c(0.380, 0.390, 0.348)
+                                    ,"Dados2.Planador1"=c(0.182, 0.179, 0.177)
+                                    ,"Dados2.Planador2"=c(0.383, 0.371, 0.400)
+                                    ,"Dados3.Planador1"=c(0.184, 0.183, 0.186),
+                                    "Dados3.Planador2"=c(0.392, 0.382, 0.409)
+                                  )
+dfColisaoInelasticaTemp <- rbind(dfColisaoInelasticaTemp, colMeans(dfColisaoInelasticaTemp))
+variablesInelasticaNames <- rownames(dfColisaoInelasticaTemp)
+variablesInelasticaNames[4] <- "Média"
+rownames(dfColisaoInelasticaTemp) <- variablesInelasticaNames
+
+print(xtable(
+    dfColisaoInelasticaTemp
+    ,caption='Experimento inelástico.'
+    ,align=c('lcccccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.65'
+)
+```
+
+A tabela acima mostra os tempos coletados e a média dos tempos na última linha. O valor médio será utilizado nos próximos calculos. A tabela seguinte, mostra o valor médio dos tempos com as respectivas massas.
+
+```{r echo=F, results="asis"}
+
+dfColisaoInelastica <- data.frame(
+                                    "Dados1.Planador1"=c(massaPlanador1, dfColisaoInelasticaTemp$Dados1.Planador1[4], dfColisaoInelasticaTemp$Dados1.Planador2[4])
+                                    ,"Dados1.Planador2"=c(massaPlanador2, 0, dfColisaoInelasticaTemp$Dados1.Planador2[4])
+                                    ,"Dados2.Planador1"=c(massaPlanador1, dfColisaoInelasticaTemp$Dados2.Planador1[4], dfColisaoInelasticaTemp$Dados2.Planador2[4])
+                                    ,"Dados2.Planador2"=c(massaPlanador2_20, 0, dfColisaoInelasticaTemp$Dados2.Planador2[4])
+                                    ,"Dados3.Planador1"=c(massaPlanador1, dfColisaoInelasticaTemp$Dados3.Planador1[4], dfColisaoInelasticaTemp$Dados3.Planador2[4])
+                                    ,"Dados3.Planador2"=c(massaPlanador2_40, 0, dfColisaoInelasticaTemp$Dados3.Planador2[4])
+                                  )
+
+variablesNames <- c("massa dos planadores (kg)", "tempo antes da colisão (s)", "tempo depois da colisão (s)")
+rownames(dfColisaoInelastica) <- variablesNames
+
+print(xtable(
+    dfColisaoInelastica
+    ,caption='Experimento inelástico.'
+    ,align=c('lcccccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.65'
+)
+```
+
+Conforme apresentado na tabela acima, não foi coletado o tempo antes da colisão para o planador 2. Também não foi coletado o tempo depois da colisão para o planador 1.
+
+
+### Cálculo das velocidades
+
+Esta seção apresenta o procedimento realizado para o cálculo das velocidades dos planadores.
+
+Para o cálculo da velocidade antes e após a colisão do planador 1 e 2, utilizamos a sequinte fórmula:
+
+\begin{align}\label{eq:velocidade}
+v = \frac{\Delta{x}}{\Delta{t}}
+\end{align}
+
+Onde: 
+
+$\Delta{x}$: é o deslocamento de 0.1m referente ao comprimento dos anteparos que foram posicionados nos planadores.
+
+$\Delta{t}$: é o intervalo de tempo para percorrer o anteparo que foi posicionado no planador.
+
+```{r echo=F, results="asis"}
+velocidadeAntesColisao = c(0.1/dfColisaoInelastica$Dados1.Planador1[2], 0, 
+                           0.1/dfColisaoInelastica$Dados2.Planador1[2], 0,
+                           0.1/dfColisaoInelastica$Dados3.Planador1[2], 0)
+velocidadeDepoisColisao = c(0.1 / dfColisaoInelastica$Dados1.Planador1[3], 0.1 / dfColisaoInelastica$Dados1.Planador2[3],
+                            0.1 / dfColisaoInelastica$Dados2.Planador1[3], 0.1 / dfColisaoInelastica$Dados2.Planador2[3],
+                            0.1 / dfColisaoInelastica$Dados3.Planador1[3], 0.1 / dfColisaoInelastica$Dados3.Planador2[3])
+dfColisaoInelastica <- rbind(dfColisaoInelastica, velocidadeAntesColisao)
+dfColisaoInelastica <- rbind(dfColisaoInelastica, velocidadeDepoisColisao)
+#do.call(data.frame,lapply(dfColisaoInelastica, function(x) replace(x, is.infinite(x),0))) # removes Inf
+variablesNames <- c(variablesNames, "velocidade antes da colisão (m/s)", "velocidade depois da colisão (m/s)")
+rownames(dfColisaoInelastica) <- variablesNames
+
+print(xtable(
+    dfColisaoInelastica
+    ,caption='Experimento inelástico.'
+    ,align=c('lcccccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.65'
+)
+```
+
+
+### Cálculo dos momentos lineares
+
+Esta seção apresenta o procedimento realizado para o cálculo dos momentos lineares dos planadores.
+
+Foi utilizada a fórmula abaixo para a realização do cálculo dos momentos lineares antes e depois da colisão dos planadores 1 e 2.
+
+\begin{align}\label{eq:momentoLinear}
+\vec{p} = m \times \vec{v}
+\end{align}
+
+Onde:
+
+$\vec{p}$: é o momento linear que deseja-se calcular;
+
+$m$: é a massa do planador 1 ou do planador 2;
+
+$\vec{v}$: é a velocidade do planador 1 ou 2 e antes ou depois da colisão;
+
+Os resultados obtidos estão apresentados na tabela abaixo:
+
+```{r echo=F, results="asis"}
+momentoLinearAntesColisao = c(dfColisaoInelastica$Dados1.Planador1[1]*dfColisaoInelastica$Dados1.Planador1[4],
+                              dfColisaoInelastica$Dados1.Planador2[1]*dfColisaoInelastica$Dados1.Planador2[4],
+                              dfColisaoInelastica$Dados2.Planador1[1]*dfColisaoInelastica$Dados2.Planador1[4],
+                              dfColisaoInelastica$Dados2.Planador2[1]*dfColisaoInelastica$Dados2.Planador2[4],
+                              dfColisaoInelastica$Dados3.Planador1[1]*dfColisaoInelastica$Dados3.Planador1[4],
+                              dfColisaoInelastica$Dados3.Planador2[1]*dfColisaoInelastica$Dados3.Planador2[4])
+momentoLinearDepoisColisao = c(dfColisaoInelastica$Dados1.Planador1[1]*dfColisaoInelastica$Dados1.Planador1[5],
+                              dfColisaoInelastica$Dados1.Planador2[1]*dfColisaoInelastica$Dados1.Planador2[5],
+                              dfColisaoInelastica$Dados2.Planador1[1]*dfColisaoInelastica$Dados2.Planador1[5],
+                              dfColisaoInelastica$Dados2.Planador2[1]*dfColisaoInelastica$Dados2.Planador2[5],
+                              dfColisaoInelastica$Dados3.Planador1[1]*dfColisaoInelastica$Dados3.Planador1[5],
+                              dfColisaoInelastica$Dados3.Planador2[1]*dfColisaoInelastica$Dados3.Planador2[5])
+
+dfColisaoInelastica <- rbind(dfColisaoInelastica, momentoLinearAntesColisao)
+dfColisaoInelastica <- rbind(dfColisaoInelastica, momentoLinearDepoisColisao)
+variablesNames <- c(variablesNames, "momento antes da colisão (kg.m/s)", "momento depois da colisão (kg.m/s)")
+rownames(dfColisaoInelastica) <- variablesNames
+
+print(xtable(
+    dfColisaoInelastica
+    ,caption='Experimento inelástico.'
+    ,align=c('lcccccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.65'
+)
+```
+
+
+### Cálculo das energias cinéticas
+
+Esta seção apresenta o procedimento realizado para o cálculo energias cinéticas dos planadores.
+
+Foi utilizada a fórmula abaixo para a realização do cálculo das energias cinéticas antes e depos da colisão dos planadores 1 e 2.
+
+\begin{align}\label{eq:energiaCinética}
+E_{cin} = \frac{1}{2} \times m \times \vec{v}^2
+\end{align}
+
+Onde:
+
+$E_{cin}$: energia cinética que deseja-se calcular;
+
+$m$: massa do planador 1 ou 2;
+
+$\vec{v}$: velocidade do planador 1 ou 2, e antes ou depois da colisão;
+
+Os resultados obtidos estão apresentados na tabela abaixo:
+
+```{r echo=F, results="asis"}
+energiaCineticaAntesColisao = c(
+                                0.5*dfColisaoInelastica$Dados1.Planador1[1]*(dfColisaoInelastica$Dados1.Planador1[4]^2),
+                                0.5*dfColisaoInelastica$Dados1.Planador2[1]*(dfColisaoInelastica$Dados1.Planador2[4]^2),
+                                0.5*dfColisaoInelastica$Dados2.Planador1[1]*(dfColisaoInelastica$Dados2.Planador1[4]^2),
+                                0.5*dfColisaoInelastica$Dados2.Planador2[1]*(dfColisaoInelastica$Dados2.Planador2[4]^2),
+                                0.5*dfColisaoInelastica$Dados3.Planador1[1]*(dfColisaoInelastica$Dados3.Planador1[4]^2),
+                                0.5*dfColisaoInelastica$Dados3.Planador2[1]*(dfColisaoInelastica$Dados3.Planador2[4]^2))
+energiaCineticaDepoisColisao = c(                                 
+                                0.5*dfColisaoInelastica$Dados1.Planador1[1]*(dfColisaoInelastica$Dados1.Planador1[5]^2),
+                                0.5*dfColisaoInelastica$Dados1.Planador2[1]*(dfColisaoInelastica$Dados1.Planador2[5]^2),
+                                0.5*dfColisaoInelastica$Dados2.Planador1[1]*(dfColisaoInelastica$Dados2.Planador1[5]^2),
+                                0.5*dfColisaoInelastica$Dados2.Planador2[1]*(dfColisaoInelastica$Dados2.Planador2[5]^2),
+                                0.5*dfColisaoInelastica$Dados3.Planador1[1]*(dfColisaoInelastica$Dados3.Planador1[5]^2),
+                                0.5*dfColisaoInelastica$Dados3.Planador2[1]*(dfColisaoInelastica$Dados3.Planador2[5]^2))
+
+dfColisaoInelastica <- rbind(dfColisaoInelastica, energiaCineticaAntesColisao)
+dfColisaoInelastica <- rbind(dfColisaoInelastica, energiaCineticaDepoisColisao)
+variablesNames <- c(variablesNames, "energia cinética antes da colisão (J)", "energia cinética depois da colisão (J)")
+rownames(dfColisaoInelastica) <- variablesNames
+
+print(xtable(
+    dfColisaoInelastica
+    ,caption='Experimento inelástico.'
+    ,align=c('lcccccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.65'
+)
+```
+
+
+### Soma dos momentos lineares e energia cinéticas
+
+Esta seção apresenta o procedimento realizado para o cálculo da soma dos momentos lineares e das energias cinéticas para cada planador.
+
+Para os groupos *Dados 1*, *Dados 2* e *Dados 3* foram realizados a soma das energias e momentos lineares antes e depois da colisão. A tabela seguinte apresenta os resultados obtidos:
+
+```{r echo=F, results="asis"}
+dfSomaMomentoLinear <- data.frame("Dados1"=c(dfColisaoInelastica$Dados1.Planador1[6]+dfColisaoInelastica$Dados1.Planador2[6],
+                                                   dfColisaoInelastica$Dados1.Planador1[7]+dfColisaoInelastica$Dados1.Planador2[7]),
+                            "Dados2"=c(dfColisaoInelastica$Dados2.Planador1[6]+dfColisaoInelastica$Dados2.Planador2[6],
+                                                   dfColisaoInelastica$Dados2.Planador1[7]+dfColisaoInelastica$Dados2.Planador2[7]),
+                            "Dados3"=c(dfColisaoInelastica$Dados3.Planador1[6]+dfColisaoInelastica$Dados3.Planador2[6],
+                                                   dfColisaoInelastica$Dados3.Planador1[7]+dfColisaoInelastica$Dados3.Planador2[7]))
+
+variablesNamesMomentoLinear <- c("soma dos momentos antes da colisão (kg.m/s)", "soma dos momentos depois da colisão (kg.m/s)")
+rownames(dfSomaMomentoLinear) <- variablesNamesMomentoLinear
+
+dfSomaEnergia <- data.frame("Dados1"=c(dfColisaoInelastica$Dados1.Planador1[8]+dfColisaoInelastica$Dados1.Planador2[8],
+                                                   dfColisaoInelastica$Dados1.Planador1[9]+dfColisaoInelastica$Dados1.Planador2[9]),
+                            "Dados2"=c(dfColisaoInelastica$Dados2.Planador1[8]+dfColisaoInelastica$Dados2.Planador2[8],
+                                                   dfColisaoInelastica$Dados2.Planador1[9]+dfColisaoInelastica$Dados2.Planador2[9]),
+                            "Dados3"=c(dfColisaoInelastica$Dados3.Planador1[8]+dfColisaoInelastica$Dados3.Planador2[8],
+                                                   dfColisaoInelastica$Dados3.Planador1[9]+dfColisaoInelastica$Dados3.Planador2[9]))
+
+variablesNamesSomaEnergia <- c("soma das energias cinética antes da colisão (J)", "soma das energias cinética depois da colisão (J)")
+rownames(dfSomaEnergia) <- variablesNamesSomaEnergia
+
+dfSoma <- rbind(dfSomaMomentoLinear, dfSomaEnergia)
+
+print(xtable(
+    dfSoma
+    ,caption='Experimento inelástico.'
+    ,align=c('lccc')
+    ,digits=c(decimalDigits)
+    )
+    ,type='latex'
+    ,caption.placement='top'
+    ,include.rownames=T
+    ,only.contents=F
+    ,include.colnames=T
+    #,html.table.attributes="class='plainTable' id='table1'"
+    #,sanitize.rownames.function=function(x) 
+    ,comment=F
+    ,timestamp=F
+    ,scalebox='0.9'
+)
+```
+
+
+### Coeficiente de restituição
+
+Esta seção apresenta o cálculo do coeficiente de restituição.
+
+A fórmula seguinte foi utilizada para obter o valor do coeficiente de restituição.
+
+\begin{align}\label{eq:coeficienteRestituicao}
+e = \frac{\abs{v\prime_a - v\prime_b}}{\abs{v_a - v_b}}
+\end{align}
+
+O valor de *e* obtido foi:
+
+```{r echo=F}
+e <- (dfColisaoInelastica$Dados1.Planador2[5] - dfColisaoInelastica$Dados1.Planador1[5]) / (dfColisaoInelastica$Dados1.Planador1[4] - dfColisaoInelastica$Dados1.Planador2[4])
+```
+
+$$`r e`$$
 
 
 Conclusão
