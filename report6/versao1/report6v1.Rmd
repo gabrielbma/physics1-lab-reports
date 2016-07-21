@@ -86,6 +86,33 @@ Este relatório descreve e analisa o experimento realizado em sala de aula na di
 Procedimento Experimental
 ====================
 
+Para o experimento de colisão elástica:
+
+1. Fixe um anteparo de 100 mm na parte de cima de cada planador.
+
+2. Use um anteparo com liga elástica no planador 1, e um anteparo de 10 mm planador 2, eles são fixado na extremidade lateral dos planadores que haverá a colisão.
+
+3. Meça a massa de cada planador e coloque na Tabela 6.1.
+
+4. Posicione o planador 1 junto ao dispositivo de liberação, e o planador 2 entre as duas barreiras de luz, como mostra a Figura 6.1.
+
+5. Acione o dispositivo de liberação, e anote os tempos indicados na Tabela 6.1.
+
+6. Repita esse procedimento duas vezes, aumentando a massa do primeiro planador, com 20 g (10 g de cada lado do planador).
+
+Para o experimento de colisão inelástica: 
+
+1. Fixe um anteparo de 100 mm na parte de cima de cada planador.
+
+2. Use um anteparo com agulha no planador 1, e um anteparo com massa no planador 2, eles são fixado na extremidade lateral dos planadores que haverá a colisão.
+
+3. Meça a massa de cada planador e coloque na Tabela 6.2.
+
+4. Posicione o planador 1 com junto ao dispositivo de liberação, e o planador 2 entre as duas barreiras de luz, como mostra a Figura 6.1.
+
+5. Acione o dispositivo de liberação, e anote os tempos indicados nos cronômetros na Tabela 6.2.
+
+6. Repita esse procedimento duas vezes, aumentando a massa do primeiro planador, com 20 g (10 g de cada lado do planador).
 
 
 ```{r initialData, include=FALSE}
@@ -744,7 +771,9 @@ $$`r e`$$
 Conclusão
 ====================
 
+No experimento elástico, de acordo com os dados apresentados na tabela 3.6 podemos concluir que houve conservação de momento linear e energia cinética. Os valores depois da colisão tanto de momento linear quanto de energia cinética ficaram muito próximo dos valores antes da colisão. Este é um resultado esperado para colisões elásticas.
 
+Já no experimento inelástico, de acordo com os dados apresentados na tabela 3.12 podemos concluir que houve conservação de momento linear pois os dados de momento linear antes da colisão ficam bem próximos dos dados após a colisão. No entanto, concluímos que não houve conservação de energia cinética, nesta mesma tabela, pode-se observar que o sistema perdeu energia ficando com menos da metade da energia de antes de colidir. Este é um resultado esperado para colisões inelásticas.
 
 Referências
 ====================
